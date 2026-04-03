@@ -5,7 +5,7 @@
 
 ## 📋 Table of Contents
 
-- [Phase 1 – Foundation & Security (Week 1–2)](#phase-1--foundation--security-week-12)
+- [Phase 1 – Foundation & Security (Week 1–2)](#phase-1--foundation--security-week-12) ✅ **COMPLETED**
   - [1. Project Overview](#1-project-overview)
   - [2. ⚠️ Security Advisory – Axios Supply Chain Attack](#2-️-security-advisory--axios-supply-chain-attack-march-2026)
   - [3. Prerequisites](#3-prerequisites)
@@ -13,14 +13,23 @@
   - [5. Supply Chain Hardening](#5-supply-chain-hardening)
   - [6. Supabase Setup](#6-supabase-setup)
   - [7. Environment Variables](#7-environment-variables)
-- [Phase 2 – Core E-Commerce (Week 3–5)](#phase-2--core-e-commerce-week-35)
+- [Phase 2 – Core E-Commerce (Week 3–5)](#phase-2--core-e-commerce-week-35) ✅ **COMPLETED**
   - [8. Project Structure](#8-project-structure)
   - [8a. URL Routing Architecture](#8a-url-routing-architecture)
   - [9. Database Schema](#9-database-schema)
-- [Phase 3 – UI/UX & SEO (Week 6–8)](#phase-3--uiux--seo-week-68)
+- [Phase 3 – UI/UX & SEO (Week 6–8)](#phase-3--uiux--seo-week-68) ✅ **COMPLETED**
   - [10. UI/UX Redesign Guidelines](#10-uiux-redesign-guidelines)
   - [11. SEO Strategy – Bihar & Near Me Keywords](#11-seo-strategy--bihar--near-me-keywords)
   - [13. Claude Pro Workflow (AI-Assisted Dev)](#13-claude-pro-workflow-ai-assisted-dev)
+- [Phase 3.5 – CMS & Admin Systems (Week 8–9)](#phase-35--cms--admin-systems-week-89)
+  - [16. CMS – Database Schema Extensions](#16-cms--database-schema-extensions)
+  - [17. CMS – User Management](#17-cms--user-management)
+  - [18. CMS – Inventory Management](#18-cms--inventory-management)
+  - [19. CMS – SEO Management](#19-cms--seo-management)
+  - [20. CMS – Order Management](#20-cms--order-management)
+  - [21. CMS – Coupon Engine](#21-cms--coupon-engine)
+  - [22. CMS – Marketing Tools](#22-cms--marketing-tools)
+  - [23. CMS – Admin Dashboard Structure](#23-cms--admin-dashboard-structure)
 - [Phase 4 – Performance, Launch & Post-Launch (Week 9–10)](#phase-4--performance-launch--post-launch-week-910)
   - [12. Performance Optimisation](#12-performance-optimisation)
   - [14. Deployment](#14-deployment)
@@ -28,7 +37,9 @@
 
 ---
 
-# Phase 1 – Foundation & Security (Week 1–2)
+# ✅ Phase 1 – Foundation & Security (Week 1–2)
+
+> **Status: COMPLETED** — Next.js 16.2 + React 19.2.4 running, axios@1.14.0 exact-pinned with overrides, Supabase project live in ap-south-1, migrations applied, .env.local configured.
 
 > **Goal:** Get the project initialised with the correct stack, lock down supply chain security, wire up Supabase, and confirm environment variables before writing a single product component.
 
@@ -361,7 +372,9 @@ Add `.env.local` to `.gitignore` — never commit secrets.
 
 ---
 
-# Phase 2 – Core E-Commerce (Week 3–5)
+# ✅ Phase 2 – Core E-Commerce (Week 3–5)
+
+> **Status: COMPLETED** — `/[categorySlug]` + `/[categorySlug]/[productSlug]` routing live with ISR, Supabase schema + RLS migrations applied, Razorpay payment + webhook routes built, cart store refactored to numeric prices/string IDs, 301 redirects for old URLs, `database.types.ts` committed.
 
 > **Goal:** Build the full product catalogue structure — URL routing, database schema, category and product pages with ISR, cart, checkout, and Razorpay integration.
 
@@ -823,7 +836,9 @@ supabase gen types typescript --project-id YOUR_PROJECT_REF > src/types/database
 
 ---
 
-# Phase 3 – UI/UX & SEO (Week 6–8)
+# ✅ Phase 3 – UI/UX & SEO (Week 6–8)
+
+> **Status: COMPLETED** — Cormorant Garamond + DM Sans + ivory/gold/deep design system applied globally; all 8 homepage sections built from Supabase data; LocalBusiness + Product + Breadcrumb JSON-LD; dynamic sitemap + robots.txt; Bihar-specific H1s/meta on all category pages; accessible ProductCard (aria-labels, 44px targets); mobile bottom nav + floating WhatsApp button; account page; `useCart` + `useWishlist` hooks.
 
 > **Goal:** Apply the luxury ethnic design system across all pages, build all homepage sections, implement Bihar-focused SEO with structured data, and polish the mobile experience.
 
@@ -1283,6 +1298,1159 @@ claude
 
 ---
 
+# Phase 3.5 – CMS & Admin Systems (Week 8–9)
+
+> **Goal:** Build a comprehensive admin CMS covering user management, inventory, SEO controls, order management, coupon engine, and marketing tools — all backed by Supabase with RLS-protected admin policies.
+
+**Exit criteria for this phase:**
+- Admin dashboard accessible only to `role = 'admin'` users
+- Products & inventory fully manageable from the CMS (add/edit/delete, stock alerts)
+- Per-page SEO meta editable without code deploys
+- Orders viewable with status update and tracking support
+- Coupon engine functional end-to-end (create, validate, apply at checkout)
+- Marketing tools (banners, announcements, email capture) operational
+- All admin tables covered by RLS policies
+
+---
+
+## 16. CMS – Database Schema Extensions
+
+Add these tables to your Supabase project (run as a new migration):
+
+```sql
+-- ── Admin Role on Profiles ────────────────────────
+alter table profiles add column if not exists role text default 'customer';
+-- Values: 'customer' | 'admin'
+create index if not exists idx_profiles_role on profiles(role);
+
+-- ── CMS: SEO Pages ────────────────────────────────
+-- Allows editing SEO meta for any page without code deploy
+create table seo_pages (
+  id serial primary key,
+  page_path text unique not null,        -- e.g. '/', '/abaya', '/abaya/my-product'
+  meta_title text,
+  meta_description text,
+  og_image_url text,
+  canonical_url text,
+  structured_data jsonb,                 -- raw JSON-LD override
+  updated_at timestamptz default now()
+);
+alter table seo_pages enable row level security;
+create policy "Admins manage SEO pages"
+  on seo_pages for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+create policy "Public can read SEO pages"
+  on seo_pages for select using (true);
+
+-- ── CMS: Banners / Announcements ─────────────────
+create table banners (
+  id serial primary key,
+  title text not null,
+  subtitle text,
+  cta_text text,
+  cta_url text,
+  image_url text,
+  placement text default 'hero',        -- 'hero' | 'announcement_bar' | 'category_top' | 'popup'
+  background_color text default '#C8973A',
+  is_active boolean default true,
+  starts_at timestamptz,
+  ends_at timestamptz,
+  priority int default 0,
+  created_at timestamptz default now()
+);
+alter table banners enable row level security;
+create policy "Admins manage banners"
+  on banners for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+create policy "Public reads active banners"
+  on banners for select using (
+    is_active = true
+    and (starts_at is null or starts_at <= now())
+    and (ends_at is null or ends_at >= now())
+  );
+
+-- ── CMS: Coupons ──────────────────────────────────
+create table coupons (
+  id serial primary key,
+  code text unique not null,             -- e.g. 'EID20', 'BIHAR10'
+  description text,
+  discount_type text not null,           -- 'percentage' | 'fixed'
+  discount_value numeric(10,2) not null, -- 20 = 20% or ₹20 off
+  min_order_amount numeric(10,2) default 0,
+  max_discount_amount numeric(10,2),     -- cap for percentage coupons
+  usage_limit int,                       -- null = unlimited
+  usage_count int default 0,
+  per_user_limit int default 1,
+  is_active boolean default true,
+  starts_at timestamptz,
+  ends_at timestamptz,
+  applicable_categories int[],           -- null = all categories
+  created_at timestamptz default now()
+);
+alter table coupons enable row level security;
+create policy "Admins manage coupons"
+  on coupons for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+-- Users can only read active, non-expired coupons (for validation)
+create policy "Public reads active coupons"
+  on coupons for select using (
+    is_active = true
+    and (starts_at is null or starts_at <= now())
+    and (ends_at is null or ends_at >= now())
+  );
+
+-- ── CMS: Coupon Usage Log ─────────────────────────
+create table coupon_usage (
+  id serial primary key,
+  coupon_id int references coupons(id) on delete cascade,
+  user_id uuid references profiles(id),
+  order_id uuid references orders(id),
+  discount_applied numeric(10,2),
+  used_at timestamptz default now(),
+  unique(coupon_id, user_id, order_id)
+);
+alter table coupon_usage enable row level security;
+create policy "Admins view all coupon usage"
+  on coupon_usage for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+create policy "Users see own coupon usage"
+  on coupon_usage for select using (auth.uid() = user_id);
+
+-- ── CMS: Inventory Alerts ─────────────────────────
+create table inventory_alerts (
+  id serial primary key,
+  product_id uuid references products(id) on delete cascade,
+  low_stock_threshold int default 5,
+  alert_sent_at timestamptz,
+  is_resolved boolean default false,
+  created_at timestamptz default now()
+);
+alter table inventory_alerts enable row level security;
+create policy "Admins manage inventory alerts"
+  on inventory_alerts for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+
+-- ── CMS: Marketing – Email Subscribers ───────────
+create table email_subscribers (
+  id serial primary key,
+  email text unique not null,
+  name text,
+  source text default 'newsletter',     -- 'newsletter' | 'checkout' | 'popup'
+  is_active boolean default true,
+  subscribed_at timestamptz default now()
+);
+alter table email_subscribers enable row level security;
+create policy "Admins manage subscribers"
+  on email_subscribers for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+create policy "Anyone can subscribe"
+  on email_subscribers for insert with check (true);
+
+-- ── CMS: Order Status History ─────────────────────
+create table order_status_history (
+  id serial primary key,
+  order_id uuid references orders(id) on delete cascade,
+  status text not null,
+  note text,
+  tracking_number text,
+  courier text,
+  changed_by uuid references profiles(id),
+  changed_at timestamptz default now()
+);
+alter table order_status_history enable row level security;
+create policy "Admins manage order history"
+  on order_status_history for all
+  using (exists (select 1 from profiles where id = auth.uid() and role = 'admin'));
+create policy "Users see own order history"
+  on order_status_history for select
+  using (exists (
+    select 1 from orders o where o.id = order_id and o.user_id = auth.uid()
+  ));
+
+-- ── Extend Orders: Add coupon + discount fields ───
+alter table orders
+  add column if not exists coupon_id int references coupons(id),
+  add column if not exists discount_amount numeric(10,2) default 0,
+  add column if not exists tracking_number text,
+  add column if not exists courier text;
+```
+
+---
+
+## 17. CMS – User Management
+
+### 17.1 Admin Middleware Guard
+
+Protect all `/admin` routes at the middleware level:
+
+```ts
+// src/middleware.ts
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export async function middleware(request: NextRequest) {
+  const response = NextResponse.next()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { get: (n) => request.cookies.get(n)?.value, set: () => {}, remove: () => {} } }
+  )
+
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.redirect(new URL('/login', request.url))
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+  }
+
+  return response
+}
+
+export const config = { matcher: ['/admin/:path*'] }
+```
+
+### 17.2 User Management API Routes
+
+```ts
+// src/app/api/admin/users/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!  // service role — never expose to client
+)
+
+// GET /api/admin/users?page=1&search=patna
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const page = parseInt(searchParams.get('page') ?? '1')
+  const search = searchParams.get('search') ?? ''
+  const limit = 20
+
+  let query = adminClient
+    .from('profiles')
+    .select('id, full_name, phone, city, state, role, created_at', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range((page - 1) * limit, page * limit - 1)
+
+  if (search) query = query.ilike('full_name', `%${search}%`)
+
+  const { data, count, error } = await query
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ users: data, total: count, page })
+}
+
+// PATCH /api/admin/users/:id  — update role
+export async function PATCH(req: NextRequest) {
+  const { userId, role } = await req.json()
+  const { error } = await adminClient
+    .from('profiles')
+    .update({ role })
+    .eq('id', userId)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
+}
+```
+
+### 17.3 Admin User List Page
+
+```tsx
+// src/app/admin/users/page.tsx
+'use client'
+import { useState, useEffect } from 'react'
+
+export default function AdminUsersPage() {
+  const [users, setUsers] = useState<any[]>([])
+  const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+    fetch(`/api/admin/users?page=${page}&search=${search}`)
+      .then(r => r.json())
+      .then(d => { setUsers(d.users); setTotal(d.total) })
+  }, [page, search])
+
+  const updateRole = async (userId: string, role: string) => {
+    await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, role }),
+    })
+    setUsers(u => u.map(u => u.id === userId ? { ...u, role } : u))
+  }
+
+  return (
+    <div className="p-6">
+      <h1 className="font-display text-2xl mb-4">User Management</h1>
+      <input
+        className="border rounded px-3 py-2 mb-4 w-full"
+        placeholder="Search by name..."
+        value={search}
+        onChange={e => { setSearch(e.target.value); setPage(1) }}
+      />
+      <table className="w-full text-sm">
+        <thead><tr className="text-left border-b">
+          <th className="py-2">Name</th><th>Phone</th><th>City</th><th>Role</th><th>Joined</th>
+        </tr></thead>
+        <tbody>
+          {users.map(u => (
+            <tr key={u.id} className="border-b hover:bg-brand-ivory/50">
+              <td className="py-2">{u.full_name ?? '—'}</td>
+              <td>{u.phone ?? '—'}</td>
+              <td>{u.city ?? '—'}</td>
+              <td>
+                <select value={u.role} onChange={e => updateRole(u.id, e.target.value)}
+                  className="border rounded px-1 py-0.5 text-xs">
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </td>
+              <td>{new Date(u.created_at).toLocaleDateString('en-IN')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="text-xs text-brand-muted mt-2">{total} total users</p>
+    </div>
+  )
+}
+```
+
+---
+
+## 18. CMS – Inventory Management
+
+### 18.1 Inventory API
+
+```ts
+// src/app/api/admin/inventory/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+// GET — list products with stock levels, filter low stock
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const lowStockOnly = searchParams.get('low_stock') === 'true'
+
+  let query = adminClient
+    .from('products')
+    .select('id, name, slug, stock, price, category_id, categories(name)')
+    .order('stock', { ascending: true })
+
+  if (lowStockOnly) query = query.lte('stock', 5)
+
+  const { data, error } = await query
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ products: data })
+}
+
+// PATCH — update stock for one or many products
+export async function PATCH(req: NextRequest) {
+  const { updates } = await req.json()  // [{ id, stock }]
+  const results = await Promise.all(
+    updates.map(({ id, stock }: { id: string; stock: number }) =>
+      adminClient.from('products').update({ stock }).eq('id', id)
+    )
+  )
+  const failed = results.filter(r => r.error)
+  if (failed.length) return NextResponse.json({ error: 'Some updates failed' }, { status: 500 })
+  return NextResponse.json({ success: true })
+}
+```
+
+### 18.2 Low Stock Webhook / Cron
+
+Use a Supabase Edge Function or Vercel Cron to fire daily stock alerts:
+
+```ts
+// supabase/functions/stock-alert/index.ts
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+
+Deno.serve(async () => {
+  const { data: lowStock } = await supabase
+    .from('products')
+    .select('id, name, stock')
+    .lte('stock', 5)
+    .gt('stock', 0)
+
+  const { data: outOfStock } = await supabase
+    .from('products')
+    .select('id, name')
+    .eq('stock', 0)
+
+  // Send email via Resend
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${Deno.env.get('RESEND_API_KEY')}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'inventory@bigpotli.com',
+      to: 'admin@bigpotli.com',
+      subject: `Bigpotli Stock Alert – ${outOfStock?.length ?? 0} out of stock`,
+      html: `
+        <h2>Out of Stock (${outOfStock?.length})</h2>
+        ${outOfStock?.map(p => `<p>❌ ${p.name}</p>`).join('') ?? '—'}
+        <h2>Low Stock ≤ 5 units (${lowStock?.length})</h2>
+        ${lowStock?.map(p => `<p>⚠️ ${p.name} — ${p.stock} left</p>`).join('') ?? '—'}
+      `
+    })
+  })
+
+  return new Response('Alert sent', { status: 200 })
+})
+```
+
+**Schedule in `vercel.json` (alternative — Vercel Cron):**
+```json
+{
+  "crons": [
+    {
+      "path": "/api/admin/stock-alert",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
+```
+
+---
+
+## 19. CMS – SEO Management
+
+### 19.1 SEO Page Editor API
+
+```ts
+// src/app/api/admin/seo/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+export async function GET() {
+  const { data } = await adminClient.from('seo_pages').select('*').order('page_path')
+  return NextResponse.json({ pages: data })
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { data, error } = await adminClient
+    .from('seo_pages')
+    .upsert({ ...body, updated_at: new Date().toISOString() }, { onConflict: 'page_path' })
+    .select()
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ page: data })
+}
+```
+
+### 19.2 Consuming CMS SEO in `generateMetadata`
+
+Override static metadata with CMS data for any page:
+
+```ts
+// src/lib/seo.ts
+import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
+
+export async function getCmsSeoMetadata(pagePath: string): Promise<Partial<Metadata>> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from('seo_pages')
+    .select('meta_title, meta_description, og_image_url, canonical_url')
+    .eq('page_path', pagePath)
+    .single()
+
+  if (!data) return {}
+
+  return {
+    ...(data.meta_title && { title: data.meta_title }),
+    ...(data.meta_description && { description: data.meta_description }),
+    ...(data.canonical_url && { alternates: { canonical: data.canonical_url } }),
+    ...(data.og_image_url && {
+      openGraph: { images: [{ url: data.og_image_url }] }
+    }),
+  }
+}
+
+// Usage in any page:
+// export async function generateMetadata() {
+//   const cmsMeta = await getCmsSeoMetadata('/abaya')
+//   return { ...staticDefaults, ...cmsMeta }   // CMS overrides static
+// }
+```
+
+### 19.3 Admin SEO Editor Page
+
+```tsx
+// src/app/admin/seo/page.tsx — simple editor for all SEO pages
+'use client'
+import { useState, useEffect } from 'react'
+
+interface SeoPage { id: number; page_path: string; meta_title: string; meta_description: string; og_image_url: string }
+
+export default function AdminSeoPage() {
+  const [pages, setPages] = useState<SeoPage[]>([])
+  const [editing, setEditing] = useState<Partial<SeoPage> | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/seo').then(r => r.json()).then(d => setPages(d.pages ?? []))
+  }, [])
+
+  const save = async () => {
+    if (!editing) return
+    const res = await fetch('/api/admin/seo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editing),
+    })
+    const { page } = await res.json()
+    setPages(p => p.some(x => x.page_path === page.page_path)
+      ? p.map(x => x.page_path === page.page_path ? page : x)
+      : [...p, page]
+    )
+    setEditing(null)
+  }
+
+  return (
+    <div className="p-6 max-w-4xl">
+      <h1 className="font-display text-2xl mb-4">SEO Page Editor</h1>
+      <button onClick={() => setEditing({ page_path: '/' })}
+        className="mb-4 bg-brand-gold text-white px-4 py-2 rounded text-sm">
+        + Add Page
+      </button>
+
+      {editing && (
+        <div className="border rounded p-4 mb-4 bg-brand-ivory/50">
+          <input placeholder="Page path (e.g. /abaya)" value={editing.page_path ?? ''}
+            onChange={e => setEditing({ ...editing, page_path: e.target.value })}
+            className="border rounded px-3 py-2 w-full mb-2" />
+          <input placeholder="Meta title" value={editing.meta_title ?? ''}
+            onChange={e => setEditing({ ...editing, meta_title: e.target.value })}
+            className="border rounded px-3 py-2 w-full mb-2" />
+          <textarea placeholder="Meta description" value={editing.meta_description ?? ''}
+            onChange={e => setEditing({ ...editing, meta_description: e.target.value })}
+            rows={3} className="border rounded px-3 py-2 w-full mb-2" />
+          <input placeholder="OG Image URL" value={editing.og_image_url ?? ''}
+            onChange={e => setEditing({ ...editing, og_image_url: e.target.value })}
+            className="border rounded px-3 py-2 w-full mb-2" />
+          <div className="flex gap-2">
+            <button onClick={save} className="bg-brand-gold text-white px-4 py-2 rounded text-sm">Save</button>
+            <button onClick={() => setEditing(null)} className="border px-4 py-2 rounded text-sm">Cancel</button>
+          </div>
+        </div>
+      )}
+
+      <table className="w-full text-sm">
+        <thead><tr className="text-left border-b">
+          <th className="py-2">Path</th><th>Title</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          {pages.map(p => (
+            <tr key={p.id} className="border-b">
+              <td className="py-2 font-mono text-xs">{p.page_path}</td>
+              <td className="text-brand-muted truncate max-w-xs">{p.meta_title ?? '—'}</td>
+              <td>
+                <button onClick={() => setEditing(p)}
+                  className="text-brand-gold text-xs underline">Edit</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+```
+
+---
+
+## 20. CMS – Order Management
+
+### 20.1 Orders API (Admin)
+
+```ts
+// src/app/api/admin/orders/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+// GET /api/admin/orders?status=pending&page=1
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const status = searchParams.get('status')
+  const page = parseInt(searchParams.get('page') ?? '1')
+  const limit = 25
+
+  let query = adminClient
+    .from('orders')
+    .select(`
+      id, status, total, discount_amount, tracking_number, courier,
+      created_at, payment_id, razorpay_order_id,
+      profiles(full_name, phone, city),
+      order_items(quantity, price, products(name, slug))
+    `, { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range((page - 1) * limit, page * limit - 1)
+
+  if (status) query = query.eq('status', status)
+
+  const { data, count, error } = await query
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ orders: data, total: count })
+}
+
+// PATCH — update order status + add tracking
+export async function PATCH(req: NextRequest) {
+  const { orderId, status, trackingNumber, courier, note, adminId } = await req.json()
+
+  const { error: updateError } = await adminClient
+    .from('orders')
+    .update({ status, tracking_number: trackingNumber, courier })
+    .eq('id', orderId)
+
+  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
+
+  // Log status change
+  await adminClient.from('order_status_history').insert({
+    order_id: orderId,
+    status,
+    note,
+    tracking_number: trackingNumber,
+    courier,
+    changed_by: adminId,
+  })
+
+  return NextResponse.json({ success: true })
+}
+```
+
+### 20.2 Admin Orders Dashboard
+
+```tsx
+// src/app/admin/orders/page.tsx
+'use client'
+import { useState, useEffect } from 'react'
+
+const STATUS_OPTIONS = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+const STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-blue-100 text-blue-800',
+  shipped: 'bg-purple-100 text-purple-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+}
+
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState<any[]>([])
+  const [filterStatus, setFilterStatus] = useState('')
+  const [updating, setUpdating] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/admin/orders?status=${filterStatus}`)
+      .then(r => r.json()).then(d => setOrders(d.orders ?? []))
+  }, [filterStatus])
+
+  const updateStatus = async (orderId: string, status: string, trackingNumber?: string, courier?: string) => {
+    setUpdating(orderId)
+    await fetch('/api/admin/orders', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, status, trackingNumber, courier }),
+    })
+    setOrders(o => o.map(x => x.id === orderId ? { ...x, status, tracking_number: trackingNumber, courier } : x))
+    setUpdating(null)
+  }
+
+  return (
+    <div className="p-6">
+      <h1 className="font-display text-2xl mb-4">Order Management</h1>
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <button onClick={() => setFilterStatus('')}
+          className={`px-3 py-1 rounded text-sm border ${!filterStatus ? 'bg-brand-gold text-white' : ''}`}>
+          All
+        </button>
+        {STATUS_OPTIONS.map(s => (
+          <button key={s} onClick={() => setFilterStatus(s)}
+            className={`px-3 py-1 rounded text-sm border capitalize ${filterStatus === s ? 'bg-brand-gold text-white' : ''}`}>
+            {s}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        {orders.map(order => (
+          <div key={order.id} className="border rounded-lg p-4">
+            <div className="flex justify-between items-start flex-wrap gap-2">
+              <div>
+                <p className="font-medium text-sm">{order.profiles?.full_name ?? 'Unknown'} · {order.profiles?.phone}</p>
+                <p className="text-xs text-brand-muted">{order.profiles?.city} · {new Date(order.created_at).toLocaleDateString('en-IN')}</p>
+                <p className="text-xs font-mono text-brand-muted mt-1">#{order.id.slice(0, 8)}</p>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold">₹{order.total}</p>
+                {order.discount_amount > 0 && (
+                  <p className="text-xs text-green-600">-₹{order.discount_amount} discount</p>
+                )}
+                <span className={`text-xs px-2 py-0.5 rounded-full capitalize ${STATUS_COLORS[order.status]}`}>
+                  {order.status}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-3 flex gap-2 items-center flex-wrap">
+              <select
+                value={order.status}
+                onChange={e => updateStatus(order.id, e.target.value)}
+                disabled={updating === order.id}
+                className="border rounded px-2 py-1 text-xs">
+                {STATUS_OPTIONS.map(s => <option key={s} value={s} className="capitalize">{s}</option>)}
+              </select>
+              {order.status === 'shipped' && (
+                <input placeholder="Tracking #"
+                  defaultValue={order.tracking_number ?? ''}
+                  onBlur={e => updateStatus(order.id, order.status, e.target.value, order.courier)}
+                  className="border rounded px-2 py-1 text-xs w-36" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+---
+
+## 21. CMS – Coupon Engine
+
+### 21.1 Coupon Validation API
+
+```ts
+// src/app/api/coupons/validate/route.ts
+import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function POST(req: NextRequest) {
+  const { code, cartTotal, userId } = await req.json()
+  const supabase = createClient()
+
+  // Fetch coupon
+  const { data: coupon, error } = await supabase
+    .from('coupons')
+    .select('*')
+    .eq('code', code.toUpperCase().trim())
+    .eq('is_active', true)
+    .single()
+
+  if (error || !coupon) {
+    return NextResponse.json({ valid: false, message: 'Invalid or expired coupon code.' }, { status: 400 })
+  }
+
+  // Check date validity
+  const now = new Date()
+  if (coupon.starts_at && new Date(coupon.starts_at) > now)
+    return NextResponse.json({ valid: false, message: 'This coupon is not active yet.' }, { status: 400 })
+  if (coupon.ends_at && new Date(coupon.ends_at) < now)
+    return NextResponse.json({ valid: false, message: 'This coupon has expired.' }, { status: 400 })
+
+  // Check usage limit
+  if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit)
+    return NextResponse.json({ valid: false, message: 'This coupon has reached its usage limit.' }, { status: 400 })
+
+  // Check min order
+  if (cartTotal < coupon.min_order_amount)
+    return NextResponse.json({
+      valid: false,
+      message: `Minimum order ₹${coupon.min_order_amount} required for this coupon.`
+    }, { status: 400 })
+
+  // Check per-user limit
+  if (userId && coupon.per_user_limit) {
+    const { count } = await supabase
+      .from('coupon_usage')
+      .select('*', { count: 'exact', head: true })
+      .eq('coupon_id', coupon.id)
+      .eq('user_id', userId)
+
+    if ((count ?? 0) >= coupon.per_user_limit)
+      return NextResponse.json({ valid: false, message: 'You have already used this coupon.' }, { status: 400 })
+  }
+
+  // Calculate discount
+  let discount = coupon.discount_type === 'percentage'
+    ? (cartTotal * coupon.discount_value) / 100
+    : coupon.discount_value
+
+  if (coupon.max_discount_amount) {
+    discount = Math.min(discount, coupon.max_discount_amount)
+  }
+  discount = Math.min(discount, cartTotal)
+
+  return NextResponse.json({
+    valid: true,
+    couponId: coupon.id,
+    discountType: coupon.discount_type,
+    discountValue: coupon.discount_value,
+    discountAmount: Math.round(discount * 100) / 100,
+    message: `Coupon applied! You save ₹${discount.toFixed(2)}.`
+  })
+}
+```
+
+### 21.2 Apply Coupon at Checkout
+
+```ts
+// src/app/api/orders/route.ts — extend existing order creation
+// After creating the order, log coupon usage and increment usage_count
+
+async function applyCouponToOrder(couponId: number, userId: string, orderId: string, discountAmount: number) {
+  const supabase = createClient()   // server client with service role for this operation
+
+  // Log usage
+  await supabase.from('coupon_usage').insert({ coupon_id: couponId, user_id: userId, order_id: orderId, discount_applied: discountAmount })
+
+  // Increment global usage count
+  await supabase.rpc('increment_coupon_usage', { coupon_id_input: couponId })
+}
+```
+
+```sql
+-- Supabase RPC function for atomic increment
+create or replace function increment_coupon_usage(coupon_id_input int)
+returns void as $$
+  update coupons set usage_count = usage_count + 1 where id = coupon_id_input;
+$$ language sql security definer;
+```
+
+### 21.3 Admin Coupon Manager
+
+```ts
+// src/app/api/admin/coupons/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+export async function GET() {
+  const { data } = await adminClient
+    .from('coupons')
+    .select('*, coupon_usage(count)')
+    .order('created_at', { ascending: false })
+  return NextResponse.json({ coupons: data })
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { data, error } = await adminClient.from('coupons').insert(body).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ coupon: data })
+}
+
+export async function PATCH(req: NextRequest) {
+  const { id, ...updates } = await req.json()
+  const { data, error } = await adminClient.from('coupons').update(updates).eq('id', id).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ coupon: data })
+}
+
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json()
+  await adminClient.from('coupons').update({ is_active: false }).eq('id', id)
+  return NextResponse.json({ success: true })
+}
+```
+
+---
+
+## 22. CMS – Marketing Tools
+
+### 22.1 Banner Manager API
+
+```ts
+// src/app/api/admin/banners/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+export async function GET() {
+  const { data } = await adminClient.from('banners').select('*').order('priority', { ascending: false })
+  return NextResponse.json({ banners: data })
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { data, error } = await adminClient.from('banners').upsert(body).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ banner: data })
+}
+
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json()
+  await adminClient.from('banners').delete().eq('id', id)
+  return NextResponse.json({ success: true })
+}
+```
+
+### 22.2 Announcement Bar Component (Consumer-Facing)
+
+```tsx
+// src/components/layout/AnnouncementBar.tsx
+import { createClient } from '@/lib/supabase/server'
+
+export async function AnnouncementBar() {
+  const supabase = createClient()
+  const { data: banners } = await supabase
+    .from('banners')
+    .select('title, subtitle, cta_text, cta_url, background_color')
+    .eq('placement', 'announcement_bar')
+    .eq('is_active', true)
+    .order('priority', { ascending: false })
+    .limit(1)
+
+  const banner = banners?.[0]
+  if (!banner) return null
+
+  return (
+    <div
+      className="w-full py-2 px-4 text-center text-sm text-white"
+      style={{ backgroundColor: banner.background_color ?? '#C8973A' }}>
+      <span>{banner.title}</span>
+      {banner.subtitle && <span className="ml-2 opacity-80">{banner.subtitle}</span>}
+      {banner.cta_text && banner.cta_url && (
+        <a href={banner.cta_url} className="ml-3 underline font-semibold">
+          {banner.cta_text}
+        </a>
+      )}
+    </div>
+  )
+}
+// Add <AnnouncementBar /> to root layout above <Navbar />
+```
+
+### 22.3 Email Subscriber Capture
+
+```ts
+// src/app/api/subscribe/route.ts
+import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function POST(req: NextRequest) {
+  const { email, name, source } = await req.json()
+  const supabase = createClient()
+
+  const { error } = await supabase
+    .from('email_subscribers')
+    .upsert({ email: email.toLowerCase().trim(), name, source }, { onConflict: 'email' })
+
+  if (error) return NextResponse.json({ error: 'Already subscribed or invalid email.' }, { status: 400 })
+  return NextResponse.json({ success: true, message: 'Subscribed successfully!' })
+}
+```
+
+```tsx
+// src/components/home/Newsletter.tsx — newsletter sign-up section
+'use client'
+import { useState } from 'react'
+
+export function Newsletter() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const subscribe = async () => {
+    setStatus('loading')
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'newsletter' }),
+    })
+    setStatus(res.ok ? 'success' : 'error')
+  }
+
+  return (
+    <section className="bg-brand-deep py-12 px-4 text-center text-brand-ivory">
+      <h2 className="font-display text-3xl mb-2">Stay in the Loop</h2>
+      <p className="text-brand-muted mb-6 text-sm">
+        New arrivals, Eid collections, and exclusive Bihar offers — straight to your inbox.
+      </p>
+      {status === 'success' ? (
+        <p className="text-brand-gold font-medium">You're subscribed! 🎉</p>
+      ) : (
+        <div className="flex gap-2 max-w-sm mx-auto">
+          <input
+            type="email" placeholder="your@email.com"
+            value={email} onChange={e => setEmail(e.target.value)}
+            className="flex-1 px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-sm"
+          />
+          <button onClick={subscribe} disabled={status === 'loading'}
+            className="bg-brand-gold px-5 py-2 rounded text-white text-sm font-medium disabled:opacity-60">
+            {status === 'loading' ? '...' : 'Subscribe'}
+          </button>
+        </div>
+      )}
+      {status === 'error' && <p className="text-red-400 text-xs mt-2">Something went wrong. Try again.</p>}
+    </section>
+  )
+}
+```
+
+### 22.4 Marketing Email via Resend (Batch Send)
+
+```ts
+// src/app/api/admin/marketing/send/route.ts
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+
+const adminClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+// POST — send a marketing email to all active subscribers
+export async function POST(req: NextRequest) {
+  const { subject, html, previewText } = await req.json()
+
+  const { data: subscribers } = await adminClient
+    .from('email_subscribers')
+    .select('email, name')
+    .eq('is_active', true)
+    .limit(500)  // Batch max — paginate for larger lists
+
+  if (!subscribers?.length) return NextResponse.json({ message: 'No active subscribers.' })
+
+  // Resend supports batch sends
+  const res = await fetch('https://api.resend.com/emails/batch', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(
+      subscribers.map(s => ({
+        from: 'Bigpotli <hello@bigpotli.com>',
+        to: s.email,
+        subject,
+        html: html.replace('{{name}}', s.name ?? 'Friend'),
+      }))
+    ),
+  })
+
+  if (!res.ok) return NextResponse.json({ error: 'Failed to send emails.' }, { status: 500 })
+  return NextResponse.json({ sent: subscribers.length })
+}
+```
+
+---
+
+## 23. CMS – Admin Dashboard Structure
+
+Add the admin layout and navigation to `src/app/admin/`:
+
+```
+src/app/admin/
+├── layout.tsx              # Admin shell — sidebar + header
+├── page.tsx                # Dashboard overview (stats, quick actions)
+├── users/
+│   └── page.tsx            # User management (§17)
+├── inventory/
+│   └── page.tsx            # Product stock management (§18)
+├── seo/
+│   └── page.tsx            # SEO page editor (§19)
+├── orders/
+│   └── page.tsx            # Order management (§20)
+├── coupons/
+│   └── page.tsx            # Coupon manager (§21)
+└── marketing/
+    ├── banners/
+    │   └── page.tsx        # Banner + announcement manager (§22)
+    └── email/
+        └── page.tsx        # Subscriber list + send campaign (§22)
+```
+
+### 23.1 Admin Layout
+
+```tsx
+// src/app/admin/layout.tsx
+import Link from 'next/link'
+
+const NAV_ITEMS = [
+  { label: 'Dashboard', href: '/admin' },
+  { label: 'Users', href: '/admin/users' },
+  { label: 'Inventory', href: '/admin/inventory' },
+  { label: 'SEO', href: '/admin/seo' },
+  { label: 'Orders', href: '/admin/orders' },
+  { label: 'Coupons', href: '/admin/coupons' },
+  { label: 'Banners', href: '/admin/marketing/banners' },
+  { label: 'Email', href: '/admin/marketing/email' },
+]
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <aside className="w-56 bg-brand-deep text-brand-ivory flex flex-col p-4 gap-1 shrink-0">
+        <p className="font-display text-xl mb-4 text-brand-gold">Bigpotli Admin</p>
+        {NAV_ITEMS.map(item => (
+          <Link key={item.href} href={item.href}
+            className="text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">
+            {item.label}
+          </Link>
+        ))}
+      </aside>
+      <main className="flex-1 overflow-auto">{children}</main>
+    </div>
+  )
+}
+```
+
+### 23.2 Admin Checklist (Phase 3.5)
+
+Add these to your master checklist:
+
+- [ ] `profiles.role` column added; at least one user set to `'admin'`
+- [ ] Admin middleware guard active — `/admin/*` redirects unauthenticated/non-admin users
+- [ ] `seo_pages`, `banners`, `coupons`, `coupon_usage`, `inventory_alerts`, `email_subscribers`, `order_status_history` tables created with RLS
+- [ ] `increment_coupon_usage` RPC function deployed to Supabase
+- [ ] Coupon validation tested end-to-end (create → apply at checkout → usage logged)
+- [ ] Low stock cron scheduled (Vercel Cron or Supabase Edge Function)
+- [ ] `AnnouncementBar` wired up in root layout
+- [ ] Newsletter subscribe API tested; subscriber visible in admin
+- [ ] Admin orders page: status update + tracking number flow confirmed
+- [ ] `getCmsSeoMetadata()` integrated in at least one category page
+
+---
+
 # Phase 4 – Performance, Launch & Post-Launch (Week 9–10)
 
 > **Goal:** Hit Core Web Vitals targets, deploy to Vercel with a custom domain, submit to Google Search Console, swap Razorpay to live keys, and run the full pre-launch checklist.
@@ -1469,6 +2637,22 @@ vercel --prod
 - [ ] Product pages have Product schema (price, availability, reviews)
 - [ ] Canonical URLs use new structure (`/abaya`, `/abaya/daily-wear-cotton-abaya`)
 - [ ] Sitemap submitted with new URL format — verify in GSC Coverage report
+
+### Phase 3.5 – CMS & Admin Systems (complete before Phase 4)
+- [ ] `profiles.role` column added; at least one user set to `'admin'`
+- [ ] Admin middleware guard active — `/admin/*` redirects unauthenticated/non-admin users
+- [ ] `seo_pages`, `banners`, `coupons`, `coupon_usage`, `inventory_alerts`, `email_subscribers`, `order_status_history` tables created with RLS
+- [ ] `increment_coupon_usage` RPC function deployed to Supabase
+- [ ] `orders` table extended with `coupon_id`, `discount_amount`, `tracking_number`, `courier` columns
+- [ ] Coupon validation API tested end-to-end (create → validate → apply at checkout → usage logged)
+- [ ] Low stock cron scheduled (Vercel Cron `0 8 * * *` or Supabase Edge Function)
+- [ ] `AnnouncementBar` server component wired in root layout above `<Navbar />`
+- [ ] Newsletter subscribe API tested; new subscriber visible in admin email list
+- [ ] Admin orders page: status update + tracking number flow confirmed
+- [ ] `getCmsSeoMetadata()` integrated in at least one category and one product page
+- [ ] Admin user role promotion tested (customer → admin)
+- [ ] Banner CMS: create, activate, and deactivate a banner from admin UI
+- [ ] Marketing batch email sent to test subscriber via Resend
 
 ### Phase 4 – Launch (run on launch day)
 - [ ] Razorpay test → live key swap done

@@ -1,14 +1,53 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+const display = Cormorant_Garamond({
+    subsets: ["latin"],
+    weight: ["400", "600", "700"],
+    variable: "--font-display",
+});
+const body = DM_Sans({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-    title: "Bigpotli | Modest & Ethnic Wear for Women",
-    description: "Discover a premium collection of Abayas, Hijabs, Stitched and Unstitched Indian Ethnic Wear at Bigpotli. Your destination for modest fashion.",
+    title: {
+        default: "Bigpotli – Abayas, Hijabs & Ethnic Wear | Shop Online in Bihar",
+        template: "%s | Bigpotli",
+    },
+    description:
+        "Shop premium ethnic wear, abayas, hijabs & unstitched suits online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & nearby cities. COD available.",
+    keywords: [
+        "buy abaya online Bihar",
+        "affordable abaya online India",
+        "abaya shop near me Bihar",
+        "best abaya online shopping in India",
+        "best hijab online store India",
+        "hijab shop near me",
+        "hijab store near me",
+        "hijab shopping online India",
+        "affordable hijab near me",
+        "affordable kurti set for women online",
+        "stitched suit for women under 500",
+        "unstitched suit online Bihar",
+        "dress material online Bihar",
+        "salwar suit online Bihar COD",
+        "ethnic co-ord set for women Bihar",
+        "modest wear India",
+        "Islamic clothing online Bihar",
+        "ethnic wear Bihar",
+        "affordable modest wear India",
+    ],
+    authors: [{ name: "Bigpotli" }],
+    openGraph: {
+        type: "website",
+        locale: "en_IN",
+        url: "https://bigpotli.com",
+        siteName: "Bigpotli",
+        images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+    },
+    twitter: { card: "summary_large_image" },
+    alternates: { canonical: "https://bigpotli.com" },
 };
 
 export default function RootLayout({
@@ -58,7 +97,7 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`${inter.variable} ${playfair.variable} font-sans antialiased text-brand-plum-dark`}>
+            <body className={`${display.variable} ${body.variable} font-sans antialiased text-brand-deep bg-brand-ivory`}>
                 {children}
             </body>
         </html>

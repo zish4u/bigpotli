@@ -7,9 +7,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MobileNav from "@/components/layout/MobileNav";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import type { ProductCard } from "@/types/database.types";
 import { Star, ShoppingBag } from "lucide-react";
+import { getCategoryMetadata, getCategorySEO } from "@/lib/seo";
 
 const CATEGORY_SLUGS = ["abaya", "hijab", "unstitched", "stitched"];
 const SITE_URL = "https://bigpotli.com";
@@ -18,7 +21,6 @@ interface Props {
   params: Promise<{ categorySlug: string }>;
 }
 
-// ISR — rebuild category pages every hour
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
@@ -39,19 +41,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!category) return { title: "Not Found" };
 
-  return {
-    title:
-      category.meta_title ??
-      `Buy ${category.name} Online in Bihar | Bigpotli`,
-    description:
-      category.meta_description ??
-      `Shop premium ${category.name} online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & all districts. COD available.`,
-    alternates: { canonical: `${SITE_URL}/${categorySlug}` },
-    openGraph: {
-      url: `${SITE_URL}/${categorySlug}`,
-      title: `${category.name} Collection | Bigpotli`,
-    },
-  };
+  if (category.meta_title && category.meta_description) {
+    return {
+      title: category.meta_title,
+      description: category.meta_description,
+      alternates: { canonical: `${SITE_URL}/${categorySlug}` },
+    };
+  }
+
+  return getCategoryMetadata(categorySlug, category.name);
 }
 
 export default async function CategoryPage({ params }: Props) {
@@ -76,6 +74,9 @@ export default async function CategoryPage({ params }: Props) {
     .order("created_at", { ascending: false });
 
   const typedProducts = (products ?? []) as unknown as ProductCard[];
+  const seo = getCategorySEO(categorySlug);
+  const h1 = seo?.h1 ?? `Buy ${category.name} Online in Bihar`;
+  const bodyText = seo?.body ?? `Shop premium ${category.name} online with free delivery across Bihar.`;
 
   return (
     <>
@@ -85,12 +86,12 @@ export default async function CategoryPage({ params }: Props) {
           { name: category.name, url: `${SITE_URL}/${categorySlug}` },
         ]}
       />
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-brand-ivory">
         <Header />
 
         {/* Category Hero */}
-        {category.image_url && (
-          <div className="relative h-56 w-full overflow-hidden">
+        <div className="relative h-64 md:h-80 w-full overflow-hidden">
+          {category.image_url ? (
             <Image
               src={category.image_url}
               alt={category.name}
@@ -98,97 +99,122 @@ export default async function CategoryPage({ params }: Props) {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-black/40 flex items-end">
-              <div className="container mx-auto px-6 pb-8">
-                <h1 className="font-serif text-4xl md:text-5xl text-white">
-                  Buy {category.name} Online in Bihar
-                </h1>
-                {category.description && (
-                  <p className="text-white/80 mt-2 text-sm">{category.description}</p>
-                )}
-              </div>
+          ) : (
+            <div className="w-full h-full bg-brand-rose/20" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/80 via-brand-deep/40 to-transparent flex items-end">
+            <div className="container mx-auto px-6 pb-8">
+              <p className="text-brand-gold text-[10px] font-bold uppercase tracking-[0.3em] mb-2">
+                {category.name}
+              </p>
+              <h1 className="font-serif text-3xl md:text-5xl text-white leading-tight">
+                {h1}
+              </h1>
             </div>
           </div>
-        )}
+        </div>
 
-        <main className="flex-grow container mx-auto px-6 py-12">
+        {/* SEO body copy + delivery info */}
+        <div className="bg-white border-b border-gray-100">
+          <div className="container mx-auto px-6 py-4">
+            <p className="text-brand-muted text-sm leading-relaxed max-w-3xl">
+              {bodyText}{" "}
+              <span className="text-brand-deep font-semibold">
+                We deliver to Patna, Gaya, Bhagalpur, Muzaffarpur, Darbhanga, Purnia, Arrah and all Bihar districts.
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <main className="flex-grow container mx-auto px-6 py-10 pb-24 md:pb-10">
           {typedProducts.length === 0 ? (
             <div className="text-center py-24">
-              <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 font-medium">
+              <ShoppingBag className="w-12 h-12 text-brand-rose mx-auto mb-4" />
+              <p className="text-brand-muted font-medium">
                 No products found in this category yet.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {typedProducts.map((product) => {
-                const image = product.product_images?.[0];
-                const discount = product.compare_price
-                  ? Math.round(
-                      ((product.compare_price - product.price) /
-                        product.compare_price) *
-                        100
-                    )
-                  : null;
+            <>
+              <p className="text-brand-muted text-sm mb-6">
+                {typedProducts.length} product{typedProducts.length !== 1 ? "s" : ""} found
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {typedProducts.map((product) => {
+                  const image = product.product_images?.[0];
+                  const discount = product.compare_price
+                    ? Math.round(
+                        ((product.compare_price - product.price) /
+                          product.compare_price) *
+                          100
+                      )
+                    : null;
 
-                return (
-                  <Link
-                    key={product.id}
-                    href={`/${categorySlug}/${product.slug}`}
-                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col"
-                  >
-                    <div className="relative h-[260px] overflow-hidden bg-gray-100">
-                      {image ? (
-                        <Image
-                          src={image.url}
-                          alt={image.alt ?? product.name}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200" />
-                      )}
-                      {product.is_new && (
-                        <span className="absolute top-3 left-3 bg-brand-plum text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-widest">
-                          New
-                        </span>
-                      )}
-                      {discount && (
-                        <span className="absolute top-3 right-3 bg-brand-gold text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                          -{discount}%
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="p-4 flex-grow flex flex-col">
-                      <div className="flex items-center gap-1 mb-1">
-                        <Star className="w-3 h-3 text-brand-gold fill-current" />
-                        <span className="text-[10px] font-bold text-gray-400">
-                          {product.rating}
-                        </span>
-                      </div>
-                      <h2 className="font-serif text-base text-brand-plum-dark font-bold line-clamp-2 mb-2 group-hover:text-brand-gold transition-colors">
-                        {product.name}
-                      </h2>
-                      <div className="mt-auto flex items-baseline gap-2">
-                        <span className="text-brand-plum font-black text-lg">
-                          ₹{product.price.toLocaleString()}
-                        </span>
-                        {product.compare_price && (
-                          <span className="text-gray-300 line-through text-xs">
-                            ₹{product.compare_price.toLocaleString()}
+                  return (
+                    <Link
+                      key={product.id}
+                      href={`/${categorySlug}/${product.slug}`}
+                      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col"
+                      aria-label={product.name}
+                    >
+                      <div className="relative h-[220px] md:h-[260px] overflow-hidden bg-brand-rose/10">
+                        {image ? (
+                          <Image
+                            src={image.url}
+                            alt={image.alt ?? product.name}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-brand-rose/20" />
+                        )}
+                        {product.is_new && (
+                          <span className="absolute top-3 left-3 bg-brand-plum text-white text-[9px] font-bold uppercase px-2.5 py-1 rounded-full tracking-widest">
+                            New
+                          </span>
+                        )}
+                        {discount && (
+                          <span className="absolute top-3 right-3 bg-brand-gold text-white text-[9px] font-bold px-2.5 py-1 rounded-full">
+                            -{discount}%
                           </span>
                         )}
                       </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+
+                      <div className="p-3 md:p-4 flex-grow flex flex-col">
+                        {(product.rating ?? 0) > 0 && (
+                          <div className="flex items-center gap-1 mb-1">
+                            <Star className="w-3 h-3 text-brand-gold fill-current" aria-hidden="true" />
+                            <span className="text-[10px] font-bold text-brand-muted">
+                              {product.rating}
+                            </span>
+                          </div>
+                        )}
+                        <h2 className="font-serif text-sm md:text-base text-brand-deep font-bold line-clamp-2 mb-2 group-hover:text-brand-gold transition-colors leading-snug">
+                          {product.name}
+                        </h2>
+                        <div className="mt-auto flex items-baseline gap-2">
+                          <span className="text-brand-plum font-black text-base md:text-lg">
+                            ₹{product.price.toLocaleString("en-IN")}
+                          </span>
+                          {product.compare_price && (
+                            <span className="text-brand-muted/40 line-through text-xs">
+                              ₹{product.compare_price.toLocaleString("en-IN")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
           )}
         </main>
 
         <Footer />
+        <MobileNav />
+        <WhatsAppButton />
       </div>
     </>
   );

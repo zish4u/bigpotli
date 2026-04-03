@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Star, ShoppingBag, Zap, Heart, ChevronRight, ShieldCheck, Truck, RefreshCw } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MobileNav from "@/components/layout/MobileNav";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import { useCartStore } from "@/store/useCartStore";
 import type { ProductWithImages } from "@/types/database.types";
 import { createClient } from "@/lib/supabase/client";
@@ -259,6 +261,8 @@ export default function ProductPage({ params }: Props) {
       </main>
 
       <Footer />
+      <MobileNav />
+      <WhatsAppButton />
     </div>
   );
 }
