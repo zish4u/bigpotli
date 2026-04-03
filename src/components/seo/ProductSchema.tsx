@@ -20,12 +20,12 @@ export default function ProductSchema({ product, categorySlug }: Props) {
       priceCurrency: "INR",
       price: product.price,
       availability:
-        product.stock > 0
+        (product.stock ?? 0) > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
     },
     aggregateRating:
-      product.review_count > 0
+      (product.review_count ?? 0) > 0
         ? {
             "@type": "AggregateRating",
             ratingValue: product.rating,

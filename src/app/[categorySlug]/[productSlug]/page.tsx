@@ -42,7 +42,7 @@ export default function ProductPage({ params }: Props) {
           return;
         }
         // Sort images by position
-        p.product_images?.sort((a, b) => a.position - b.position);
+        p.product_images?.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
         setProduct(p);
         setLoading(false);
       });
@@ -114,9 +114,9 @@ export default function ProductPage({ params }: Props) {
               "@type": "Offer",
               priceCurrency: "INR",
               price: product.price,
-              availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              availability: (product.stock ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             },
-            aggregateRating: product.review_count > 0
+            aggregateRating: (product.review_count ?? 0) > 0
               ? { "@type": "AggregateRating", ratingValue: product.rating, reviewCount: product.review_count }
               : undefined,
           }),
@@ -186,11 +186,11 @@ export default function ProductPage({ params }: Props) {
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star
                     key={s}
-                    className={`w-4 h-4 ${s <= Math.round(product.rating) ? "text-brand-gold fill-current" : "text-gray-200"}`}
+                    className={`w-4 h-4 ${s <= Math.round(product.rating ?? 0) ? "text-brand-gold fill-current" : "text-gray-200"}`}
                   />
                 ))}
               </div>
-              <span className="text-sm text-gray-500">{product.rating} ({product.review_count} reviews)</span>
+              <span className="text-sm text-gray-500">{product.rating} ({product.review_count ?? 0} reviews)</span>
             </div>
 
             <div className="flex items-baseline gap-3">
@@ -212,9 +212,9 @@ export default function ProductPage({ params }: Props) {
             )}
 
             <div className="flex items-center gap-2 text-sm">
-              <div className={`w-2 h-2 rounded-full ${product.stock > 0 ? "bg-green-500" : "bg-red-400"}`} />
-              <span className={`font-semibold ${product.stock > 0 ? "text-green-600" : "text-red-500"}`}>
-                {product.stock > 0 ? `In Stock (${product.stock} left)` : "Out of Stock"}
+              <div className={`w-2 h-2 rounded-full ${(product.stock ?? 0) > 0 ? "bg-green-500" : "bg-red-400"}`} />
+              <span className={`font-semibold ${(product.stock ?? 0) > 0 ? "text-green-600" : "text-red-500"}`}>
+                {(product.stock ?? 0) > 0 ? `In Stock (${product.stock ?? 0} left)` : "Out of Stock"}
               </span>
             </div>
 
