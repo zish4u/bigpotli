@@ -10,10 +10,7 @@ import { useCartStore } from "@/store/useCartStore";
 export default function CartPage() {
     const { cart, removeFromCart, updateQuantity } = useCartStore();
 
-    const subtotal = cart.reduce((acc, item) => {
-        const price = parseInt(item.price.replace(/[^\d]/g, ""));
-        return acc + price * item.quantity;
-    }, 0);
+    const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -52,9 +49,7 @@ export default function CartPage() {
                                 <div className="text-right">Total</div>
                             </div>
 
-                            {cart.map((item) => {
-                                const itemPrice = parseInt(item.price.replace(/[^\d]/g, ""));
-                                return (
+                            {cart.map((item) => (
                                     <div key={item.id} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center pb-8 border-b border-gray-100">
                                         <div className="col-span-2 flex gap-6">
                                             <div className="relative h-32 w-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
@@ -63,7 +58,7 @@ export default function CartPage() {
                                             <div className="space-y-2">
                                                 <p className="text-xs text-brand-gold font-bold uppercase tracking-widest">{item.category}</p>
                                                 <h3 className="font-serif text-xl text-brand-plum">{item.name}</h3>
-                                                <p className="text-gray-500 font-bold">{item.price}</p>
+                                                <p className="text-gray-500 font-bold">₹{item.price.toLocaleString()}</p>
                                                 <button
                                                     onClick={() => removeFromCart(item.id)}
                                                     className="text-xs text-red-500 font-bold uppercase flex items-center gap-1 hover:text-red-700 transition-colors"
@@ -92,11 +87,10 @@ export default function CartPage() {
                                         </div>
 
                                         <div className="text-right">
-                                            <p className="text-xl font-bold text-brand-plum">₹{(itemPrice * item.quantity).toLocaleString()}</p>
+                                            <p className="text-xl font-bold text-brand-plum">₹{(item.price * item.quantity).toLocaleString()}</p>
                                         </div>
                                     </div>
-                                );
-                            })}
+                            ))}
                         </div>
 
                         {/* Order Summary Sidebar */}

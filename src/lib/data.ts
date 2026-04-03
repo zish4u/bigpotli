@@ -7,14 +7,16 @@ export interface Review {
 }
 
 export interface Product {
-    id: number;
+    id: string;       // stringified for cart compatibility
+    slug: string;
     name: string;
-    price: string;
-    oldPrice: string;
+    price: number;        // numeric e.g. 4999
+    comparePrice: number; // was oldPrice
     image: string;
     images: string[];
     isNew: boolean;
-    category: string;
+    category: string;     // display name e.g. "Luxury Abayas"
+    categorySlug: string; // URL slug e.g. "abaya"
     description: string;
     details: string[];
     reviews: Review[];
@@ -38,10 +40,11 @@ const MOCK_REVIEWS: Review[] = [
 
 export const PRODUCTS: Product[] = [
     {
-        id: 1,
+        id: "1",
+        slug: "luxury-embroidered-abaya",
         name: "Luxury Embroidered Abaya",
-        price: "₹4,999",
-        oldPrice: "₹5,999",
+        price: 4999,
+        comparePrice: 5999,
         image: "https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=800&auto=format&fit=crop",
@@ -49,7 +52,8 @@ export const PRODUCTS: Product[] = [
             "https://images.unsplash.com/photo-1618333303493-2715ed8c386b?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: true,
-        category: "abaya",
+        category: "Luxury Abayas",
+        categorySlug: "abaya",
         description: "Experience elegance with our hand-embroidered luxury abaya made from premium Nida fabric.",
         details: ["Premium Nida Fabric", "Hand-stitched Embroidery", "Includes matching Hijab", "Breathable Material"],
         reviews: MOCK_REVIEWS,
@@ -58,17 +62,19 @@ export const PRODUCTS: Product[] = [
         colors: ["Midnight Black", "Emerald Green", "Deep Maroon"]
     },
     {
-        id: 2,
+        id: "2",
+        slug: "floral-silk-unstitched-suit",
         name: "Floral Silk Unstitched Suit",
-        price: "₹2,499",
-        oldPrice: "₹3,299",
+        price: 2499,
+        comparePrice: 3299,
         image: "https://images.unsplash.com/photo-1610030469915-9a08e01c1de1?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1610030469915-9a08e01c1de1?q=80&w=800&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: false,
-        category: "unstitched",
+        category: "Unstitched Collection",
+        categorySlug: "unstitched",
         description: "Beautiful floral patterns on premium silk fabric, perfect for festive occasions.",
         details: ["3-Piece Unstitched Set", "Pure Silk Dupatta", "Cotton Satin Bottom", "Digital Floral Print"],
         reviews: MOCK_REVIEWS.slice(0, 2),
@@ -77,17 +83,19 @@ export const PRODUCTS: Product[] = [
         colors: ["Ocean Blue", "Dusty Pink", "Lavender"]
     },
     {
-        id: 3,
+        id: "3",
+        slug: "premium-chiffon-hijab-navy",
         name: "Premium Chiffon Hijab - Navy",
-        price: "₹799",
-        oldPrice: "₹1,200",
+        price: 799,
+        comparePrice: 1200,
         image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1620916566398-39f11438784e?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: true,
-        category: "hijab",
+        category: "Premium Hijabs",
+        categorySlug: "hijab",
         description: "Lightweight and breathable chiffon hijab for daily wear with a premium non-slip texture.",
         details: ["Breathable Chiffon", "Standard Size (180x75cm)", "Non-slip texture", "Durable color"],
         reviews: MOCK_REVIEWS.slice(1, 3),
@@ -96,16 +104,18 @@ export const PRODUCTS: Product[] = [
         colors: ["Navy Blue", "Slate Gray", "Burgundy"]
     },
     {
-        id: 4,
+        id: "4",
+        slug: "designer-georgette-suit",
         name: "Designer Georgette Suit",
-        price: "₹3,750",
-        oldPrice: "₹4,500",
+        price: 3750,
+        comparePrice: 4500,
         image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: false,
-        category: "stitched",
+        category: "Stitched Ethnic",
+        categorySlug: "stitched",
         description: "Elegant georgette suit with intricate designer details and matching trousers.",
         details: ["Fully Stitched", "Inner Micro-silk Lining", "Heavy Sequins Work", "Comfort Fit"],
         reviews: MOCK_REVIEWS,
@@ -114,16 +124,18 @@ export const PRODUCTS: Product[] = [
         colors: ["Royal Blue", "Golden Peach", "Silver Gray"]
     },
     {
-        id: 5,
+        id: "5",
+        slug: "daily-wear-cotton-abaya",
         name: "Daily Wear Cotton Abaya",
-        price: "₹1,999",
-        oldPrice: "₹2,500",
+        price: 1999,
+        comparePrice: 2500,
         image: "https://images.unsplash.com/photo-1609357605129-26f69abb5db8?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1609357605129-26f69abb5db8?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: false,
-        category: "abaya",
+        category: "Luxury Abayas",
+        categorySlug: "abaya",
         description: "Comfortable cotton abaya perfect for regular use and casual outings.",
         details: ["Soft Cotton Blend", "Side Pockets", "Machine Washable", "Daily Comfort"],
         reviews: MOCK_REVIEWS.slice(0, 1),
@@ -132,16 +144,18 @@ export const PRODUCTS: Product[] = [
         colors: ["Charcoal", "Olive Green", "Beige"]
     },
     {
-        id: 6,
-        name: "Embroidered Pashmina unstitched",
-        price: "₹3,800",
-        oldPrice: "₹4,500",
+        id: "6",
+        slug: "embroidered-pashmina-unstitched",
+        name: "Embroidered Pashmina Unstitched",
+        price: 3800,
+        comparePrice: 4500,
         image: "https://images.unsplash.com/photo-1621330396173-e41b1cafd17f?q=80&w=800&auto=format&fit=crop",
         images: [
             "https://images.unsplash.com/photo-1621330396173-e41b1cafd17f?q=80&w=800&auto=format&fit=crop"
         ],
         isNew: true,
-        category: "unstitched",
+        category: "Unstitched Collection",
+        categorySlug: "unstitched",
         description: "Warm and stylish pashmina suit with heavy embroidery for those chilly days.",
         details: ["Pure Pashmina Wool", "Rich Kashuri Embroidery", "Warm Texture", "Vibrant colors"],
         reviews: MOCK_REVIEWS,

@@ -29,9 +29,9 @@ export default function Footer() {
                 <div>
                     <h4 className="font-serif text-xl text-brand-gold mb-6 font-semibold">Discovery</h4>
                     <ul className="space-y-4 text-gray-400 text-sm font-medium">
-                        <li><Link href="/category/unstitched" className="hover:text-brand-gold transition-colors">Unstitched Collection</Link></li>
-                        <li><Link href="/category/abaya" className="hover:text-brand-gold transition-colors">Luxury Abayas</Link></li>
-                        <li><Link href="/category/hijab" className="hover:text-brand-gold transition-colors">Premium Hijabs</Link></li>
+                        <li><Link href="/unstitched" className="hover:text-brand-gold transition-colors">Unstitched Collection</Link></li>
+                        <li><Link href="/abaya" className="hover:text-brand-gold transition-colors">Luxury Abayas</Link></li>
+                        <li><Link href="/hijab" className="hover:text-brand-gold transition-colors">Premium Hijabs</Link></li>
                         <li><Link href="/new-arrivals" className="hover:text-brand-gold transition-colors">New Arrivals</Link></li>
                     </ul>
                 </div>

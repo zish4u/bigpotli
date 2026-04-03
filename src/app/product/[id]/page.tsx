@@ -16,7 +16,7 @@ export default function ProductDetailsPage() {
     const router = useRouter();
     const { addToCart, toggleWishlist, isInWishlist } = useCartStore();
 
-    const product = PRODUCTS.find((p) => p.id === Number(id));
+    const product = PRODUCTS.find((p) => p.id === String(id));
     const isFavourite = product ? isInWishlist(product.id) : false;
 
     const [selectedSize, setSelectedSize] = useState("M");
@@ -112,7 +112,7 @@ export default function ProductDetailsPage() {
                             <h1 className="font-serif text-3xl md:text-4xl text-brand-plum-dark mb-3 leading-tight font-bold">{product.name}</h1>
                             <div className="flex items-center gap-4">
                                 <span className="text-2xl font-bold text-brand-plum">{product.price}</span>
-                                <span className="text-lg text-gray-400 line-through">{product.oldPrice}</span>
+                                <span className="text-lg text-gray-400 line-through">₹{product.comparePrice.toLocaleString()}</span>
                                 <span className="text-brand-gold text-sm font-bold">20% OFF</span>
                             </div>
                         </div>

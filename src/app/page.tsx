@@ -8,10 +8,10 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
     const categories = [
-        { name: "Unstitched", image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop", count: "120+ Items", link: "/category/unstitched" },
-        { name: "Abayas", image: "https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=800&auto=format&fit=crop", count: "45 Items", link: "/category/abaya" },
-        { name: "Hijabs", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop", count: "80 Items", link: "/category/hijab" },
-        { name: "Stitched Ethnic", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=800&auto=format&fit=crop", count: "200+ Items", link: "/category/stitched" },
+        { name: "Unstitched", image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop", count: "120+ Items", link: "/unstitched" },
+        { name: "Abayas", image: "https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=800&auto=format&fit=crop", count: "45 Items", link: "/abaya" },
+        { name: "Hijabs", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop", count: "80 Items", link: "/hijab" },
+        { name: "Stitched Ethnic", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=800&auto=format&fit=crop", count: "200+ Items", link: "/stitched" },
     ];
 
     return (
@@ -40,7 +40,7 @@ export default function Home() {
                                 <Link href="/shopping" className="bg-brand-plum text-white px-8 py-4 rounded-full flex items-center gap-2 hover:bg-brand-plum-light transition-all shadow-lg hover:shadow-xl group">
                                     Shop Collection <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
-                                <Link href="/category/unstitched" className="bg-white text-brand-plum-dark px-8 py-4 rounded-full border border-gray-200 hover:border-brand-gold transition-all shadow-md">
+                                <Link href="/unstitched" className="bg-white text-brand-plum-dark px-8 py-4 rounded-full border border-gray-200 hover:border-brand-gold transition-all shadow-md">
                                     View Unstitched
                                 </Link>
                             </div>
@@ -99,7 +99,7 @@ export default function Home() {
                                 Experience the finest embroidery and premium fabrics with our limited-time celebratory discounts.
                             </p>
                             <div className="flex flex-wrap gap-4 pt-2 justify-center md:justify-start">
-                                <Link href="/category/abaya" className="bg-brand-gold text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-brand-plum transition-all shadow-xl hover:scale-105 active:scale-95">
+                                <Link href="/abaya" className="bg-brand-gold text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-brand-plum transition-all shadow-xl hover:scale-105 active:scale-95">
                                     Shop the Offer
                                 </Link>
                                 <div className="flex flex-col justify-center">

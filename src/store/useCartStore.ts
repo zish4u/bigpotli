@@ -2,27 +2,29 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface CartItem {
-    id: number;
+    id: string;          // UUID for Supabase products, stringified number for legacy
     name: string;
-    price: string;
+    slug: string;
+    price: number;       // numeric (e.g. 4999)
     image: string;
     quantity: number;
-    category: string;
+    category: string;    // display name
+    categorySlug: string;
 }
 
 interface CartStore {
     cart: CartItem[];
-    wishlist: number[]; // IDs of products
+    wishlist: string[];
     discount: number;
     appliedCoupon: string | null;
-    addToCart: (product: any) => void;
-    removeFromCart: (productId: number) => void;
-    updateQuantity: (productId: number, quantity: number) => void;
+    addToCart: (product: Omit<CartItem, 'quantity'>) => void;
+    removeFromCart: (productId: string) => void;
+    updateQuantity: (productId: string, quantity: number) => void;
     applyCoupon: (couponCode: string) => { success: boolean; message: string };
     removeCoupon: () => void;
     clearCart: () => void;
-    toggleWishlist: (productId: number) => void;
-    isInWishlist: (productId: number) => boolean;
+    toggleWishlist: (productId: string) => void;
+    isInWishlist: (productId: string) => boolean;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -36,7 +38,6 @@ export const useCartStore = create<CartStore>()(
             addToCart: (product) => {
                 const { cart } = get();
                 const existingItem = cart.find((item) => item.id === product.id);
-
                 if (existingItem) {
                     set({
                         cart: cart.map((item) =>
@@ -63,10 +64,7 @@ export const useCartStore = create<CartStore>()(
 
             applyCoupon: (couponCode) => {
                 const { cart } = get();
-                const subtotal = cart.reduce((acc, item) => {
-                    const price = parseInt(item.price.replace(/[^\d]/g, ""));
-                    return acc + price * item.quantity;
-                }, 0);
+                const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
                 const { COUPONS } = require("@/lib/data");
                 const coupon = COUPONS.find((c: any) => c.code.toUpperCase() === couponCode.toUpperCase());
@@ -74,17 +72,13 @@ export const useCartStore = create<CartStore>()(
                 if (!coupon) {
                     return { success: false, message: "Invalid coupon code." };
                 }
-
                 if (coupon.minSpend && subtotal < coupon.minSpend) {
                     return { success: false, message: `Minimum spend of ₹${coupon.minSpend} required.` };
                 }
 
-                let discountVal = 0;
-                if (coupon.discountType === "percentage") {
-                    discountVal = Math.floor((subtotal * coupon.discountValue) / 100);
-                } else {
-                    discountVal = coupon.discountValue;
-                }
+                const discountVal = coupon.discountType === "percentage"
+                    ? Math.floor((subtotal * coupon.discountValue) / 100)
+                    : coupon.discountValue;
 
                 set({ discount: discountVal, appliedCoupon: coupon.code });
                 return { success: true, message: `Coupon ${coupon.code} applied successfully!` };

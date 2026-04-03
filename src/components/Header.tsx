@@ -56,10 +56,10 @@ export default function Header() {
 
                     {/* Desktop Navigation */}
                     <ul className="hidden md:flex items-center space-x-8 text-sm font-bold uppercase tracking-widest text-brand-plum-dark">
-                        <li><Link href="/category/unstitched" className="hover:text-brand-gold transition-colors">Unstitched</Link></li>
-                        <li><Link href="/category/stitched" className="hover:text-brand-gold transition-colors">Stitched</Link></li>
-                        <li><Link href="/category/abaya" className="hover:text-brand-gold transition-colors">Abaya</Link></li>
-                        <li><Link href="/category/hijab" className="hover:text-brand-gold transition-colors">Hijab</Link></li>
+                        <li><Link href="/unstitched" className="hover:text-brand-gold transition-colors">Unstitched</Link></li>
+                        <li><Link href="/stitched" className="hover:text-brand-gold transition-colors">Stitched</Link></li>
+                        <li><Link href="/abaya" className="hover:text-brand-gold transition-colors">Abaya</Link></li>
+                        <li><Link href="/hijab" className="hover:text-brand-gold transition-colors">Hijab</Link></li>
                         <li><Link href="/new-arrivals" className="text-brand-gold hover:text-brand-plum transition-colors">New Arrivals</Link></li>
                     </ul>
 
@@ -134,10 +134,10 @@ export default function Header() {
                             <button onClick={() => setIsMenuOpen(false)} className="p-4"><X className="w-6 h-6" /></button>
                         </div>
                         <ul className="flex flex-col space-y-6 text-xl font-bold uppercase tracking-wider text-brand-plum-dark">
-                            <li><Link href="/category/unstitched" onClick={() => setIsMenuOpen(false)}>Unstitched</Link></li>
-                            <li><Link href="/category/stitched" onClick={() => setIsMenuOpen(false)}>Stitched</Link></li>
-                            <li><Link href="/category/abaya" onClick={() => setIsMenuOpen(false)}>Abaya</Link></li>
-                            <li><Link href="/category/hijab" onClick={() => setIsMenuOpen(false)}>Hijab</Link></li>
+                            <li><Link href="/unstitched" onClick={() => setIsMenuOpen(false)}>Unstitched</Link></li>
+                            <li><Link href="/stitched" onClick={() => setIsMenuOpen(false)}>Stitched</Link></li>
+                            <li><Link href="/abaya" onClick={() => setIsMenuOpen(false)}>Abaya</Link></li>
+                            <li><Link href="/hijab" onClick={() => setIsMenuOpen(false)}>Hijab</Link></li>
                             <li><Link href="/new-arrivals" onClick={() => setIsMenuOpen(false)} className="text-brand-gold">New Arrivals</Link></li>
                             <hr className="border-gray-100" />
                             {isLoggedIn ? (
