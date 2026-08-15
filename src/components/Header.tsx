@@ -45,21 +45,19 @@ export default function Header() {
                     {/* Logo */}
                     <Link href="/" className="flex-shrink-0 transition-transform hover:scale-105">
                         <Image
-                            src="/logo.jpg"
+                            src="/logo_old.jpg"
                             alt="Bigpotli Logo"
-                            width={150}
-                            height={40}
-                            className="h-10 md:h-14 w-auto mix-blend-multiply"
+                            width={64}
+                            height={64}
+                            className="h-10 w-10 md:h-14 md:w-14 rounded-full mix-blend-multiply"
                             priority
                         />
                     </Link>
 
                     {/* Desktop Navigation */}
                     <ul className="hidden md:flex items-center space-x-8 text-sm font-bold uppercase tracking-widest text-brand-plum-dark">
-                        <li><Link href="/unstitched" className="hover:text-brand-gold transition-colors">Unstitched</Link></li>
-                        <li><Link href="/stitched" className="hover:text-brand-gold transition-colors">Stitched</Link></li>
                         <li><Link href="/abaya" className="hover:text-brand-gold transition-colors">Abaya</Link></li>
-                        <li><Link href="/hijab" className="hover:text-brand-gold transition-colors">Hijab</Link></li>
+                        <li><Link href="/pakistani-suit" className="hover:text-brand-gold transition-colors">Pakistani Suit</Link></li>
                         <li><Link href="/new-arrivals" className="text-brand-gold hover:text-brand-plum transition-colors">New Arrivals</Link></li>
                     </ul>
 
@@ -130,14 +128,12 @@ export default function Header() {
                 {isMenuOpen && (
                     <div className="md:hidden bg-white fixed inset-0 z-50 p-6 flex flex-col animate-in slide-in-from-left duration-300">
                         <div className="flex justify-between items-center mb-10">
-                            <Image src="/logo.jpg" alt="Logo" width={120} height={30} className="h-8 w-auto" />
+                            <Image src="/logo_old.jpg" alt="Logo" width={48} height={48} className="h-8 w-8 rounded-full" />
                             <button onClick={() => setIsMenuOpen(false)} className="p-4"><X className="w-6 h-6" /></button>
                         </div>
                         <ul className="flex flex-col space-y-6 text-xl font-bold uppercase tracking-wider text-brand-plum-dark">
-                            <li><Link href="/unstitched" onClick={() => setIsMenuOpen(false)}>Unstitched</Link></li>
-                            <li><Link href="/stitched" onClick={() => setIsMenuOpen(false)}>Stitched</Link></li>
                             <li><Link href="/abaya" onClick={() => setIsMenuOpen(false)}>Abaya</Link></li>
-                            <li><Link href="/hijab" onClick={() => setIsMenuOpen(false)}>Hijab</Link></li>
+                            <li><Link href="/pakistani-suit" onClick={() => setIsMenuOpen(false)}>Pakistani Suit</Link></li>
                             <li><Link href="/new-arrivals" onClick={() => setIsMenuOpen(false)} className="text-brand-gold">New Arrivals</Link></li>
                             <hr className="border-gray-100" />
                             {isLoggedIn ? (

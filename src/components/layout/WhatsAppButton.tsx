@@ -1,5 +1,7 @@
+import { siteConfig } from "@/lib/siteConfig";
+
 export default function WhatsAppButton() {
-  const phone = "919876543210";
+  const phone = siteConfig.phone.href.replace("tel:+", "");
   const message = encodeURIComponent(
     "Hi Bigpotli! I'm interested in your ethnic wear collection."
   );

@@ -10,11 +10,24 @@ import Footer from "@/components/Footer";
 import MobileNav from "@/components/layout/MobileNav";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import FAQSchema from "@/components/seo/FAQSchema";
+import FAQAccordion from "@/components/FAQAccordion";
+import BiharDistrictCoverage from "@/components/seo/BiharDistrictCoverage";
 import type { ProductCard } from "@/types/database.types";
 import { Star, ShoppingBag } from "lucide-react";
 import { getCategoryMetadata, getCategorySEO } from "@/lib/seo";
+import { TIER1_DISTRICTS, TIER2_DISTRICTS, TIER3_DISTRICTS } from "@/lib/districts";
 
-const CATEGORY_SLUGS = ["abaya", "hijab", "unstitched", "stitched"];
+const CATEGORY_SLUGS = [
+  "abaya",
+  "hijab",
+  "unstitched",
+  "stitched",
+  "pakistani-suit",
+  "lawn-suit",
+  "kurti",
+  "co-ord-set",
+];
 const SITE_URL = "https://bigpotli.com";
 
 interface Props {
@@ -86,6 +99,7 @@ export default async function CategoryPage({ params }: Props) {
           { name: category.name, url: `${SITE_URL}/${categorySlug}` },
         ]}
       />
+      {seo?.faqs && seo.faqs.length > 0 && <FAQSchema items={seo.faqs} />}
       <div className="min-h-screen flex flex-col bg-brand-ivory">
         <Header />
 
@@ -118,13 +132,35 @@ export default async function CategoryPage({ params }: Props) {
         <div className="bg-white border-b border-gray-100">
           <div className="container mx-auto px-6 py-4">
             <p className="text-brand-muted text-sm leading-relaxed max-w-3xl">
-              {bodyText}{" "}
-              <span className="text-brand-deep font-semibold">
-                We deliver to Patna, Gaya, Bhagalpur, Muzaffarpur, Darbhanga, Purnia, Arrah and all Bihar districts.
-              </span>
+              {bodyText}
+              {seo?.districtCoverage ? (
+                <>
+                  {" "}
+                  <a
+                    href="#bihar-districts"
+                    className="text-brand-deep font-semibold underline hover:text-brand-gold transition-colors"
+                  >
+                    and 20+ other districts across Bihar
+                  </a>
+                  .
+                </>
+              ) : (
+                <span className="text-brand-deep font-semibold">
+                  {" "}
+                  We deliver to Patna, Gaya, Bhagalpur, Muzaffarpur, Darbhanga, Purnia, Arrah and all Bihar districts.
+                </span>
+              )}
             </p>
           </div>
         </div>
+
+        {seo?.districtCoverage && (
+          <BiharDistrictCoverage
+            tier1={TIER1_DISTRICTS}
+            tier2={TIER2_DISTRICTS}
+            tier3={TIER3_DISTRICTS}
+          />
+        )}
 
         <main className="flex-grow container mx-auto px-6 py-10 pb-24 md:pb-10">
           {typedProducts.length === 0 ? (
@@ -211,6 +247,8 @@ export default async function CategoryPage({ params }: Props) {
             </>
           )}
         </main>
+
+        {seo?.faqs && seo.faqs.length > 0 && <FAQAccordion items={seo.faqs} />}
 
         <Footer />
         <MobileNav />

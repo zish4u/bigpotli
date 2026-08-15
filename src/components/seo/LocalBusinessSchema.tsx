@@ -1,26 +1,32 @@
+import { siteConfig } from "@/lib/siteConfig";
+import { ALL_BIHAR_DISTRICTS } from "@/lib/districts";
+
 export default function LocalBusinessSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "ClothingStore",
-    name: "Bigpotli",
+    name: siteConfig.name,
     description:
       "Premium ethnic and modest wear for women in Bihar and India",
-    url: "https://bigpotli.com",
-    telephone: "+91-98765-43210",
+    url: siteConfig.url,
+    telephone: siteConfig.phone.href.replace("tel:", ""),
     address: {
       "@type": "PostalAddress",
-      streetAddress: "123 Elegance Lane",
-      addressLocality: "Patna",
-      addressRegion: "Bihar",
-      postalCode: "800001",
-      addressCountry: "IN",
+      streetAddress: siteConfig.address.street,
+      addressLocality: siteConfig.address.locality,
+      addressRegion: siteConfig.address.region,
+      postalCode: siteConfig.address.postalCode,
+      addressCountry: siteConfig.address.country,
     },
     geo: {
       "@type": "GeoCoordinates",
       latitude: 25.5941,
       longitude: 85.1376,
     },
-    areaServed: ["Bihar", "Jharkhand", "Uttar Pradesh", "India"],
+    areaServed: ALL_BIHAR_DISTRICTS.map((district) => ({
+      "@type": "AdministrativeArea",
+      name: district,
+    })),
     priceRange: "₹₹",
     openingHours: "Mo-Sa 09:00-21:00",
   };

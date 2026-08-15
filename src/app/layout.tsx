@@ -11,6 +11,7 @@ const display = Cormorant_Garamond({
 const body = DM_Sans({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://bigpotli.com"),
     title: {
         default: "Bigpotli – Abayas, Hijabs & Ethnic Wear | Shop Online in Bihar",
         template: "%s | Bigpotli",
@@ -44,7 +45,6 @@ export const metadata: Metadata = {
         locale: "en_IN",
         url: "https://bigpotli.com",
         siteName: "Bigpotli",
-        images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
     },
     twitter: { card: "summary_large_image" },
     alternates: { canonical: "https://bigpotli.com" },
