@@ -10,10 +10,11 @@ const config: Config = {
         extend: {
             colors: {
                 brand: {
+                    // Red family, matched to the /public/logo_old.jpg mark (#C22629)
                     plum: {
-                        DEFAULT: "#541E50",
-                        light: "#6e2a6a",
-                        dark: "#3d143a",
+                        DEFAULT: "#C22629",
+                        light: "#DC4B4E",
+                        dark: "#8C1A1C",
                     },
                     gold: {
                         DEFAULT: "#C8973A",
@@ -21,9 +22,9 @@ const config: Config = {
                         dark: "#a67828",
                     },
                     ivory: "#FAF7F2",
-                    deep: "#1C1209",
-                    muted: "#7A6652",
-                    rose: "#E8C4B0",
+                    deep: "#1B0E0E",
+                    muted: "#7A5854",
+                    rose: "#F1CBC4",
                     green: "#2D5016",
                 },
             },

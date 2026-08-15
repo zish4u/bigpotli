@@ -229,7 +229,7 @@ export default function ProductDetailsPage() {
                                 </div>
                                 <div className="bg-gray-50 rounded-2xl p-8 flex items-center justify-center">
                                     <div className="text-center space-y-4">
-                                        <Image src="/logo.jpg" alt="Bigpotli Seal" width={100} height={30} className="mx-auto opacity-50 grayscale" />
+                                        <Image src="/logo_old.jpg" alt="Bigpotli Seal" width={64} height={64} className="mx-auto opacity-50 grayscale rounded-full" />
                                         <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.3em]">Quality Guaranteed</p>
                                     </div>
                                 </div>

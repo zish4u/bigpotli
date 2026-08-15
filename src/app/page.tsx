@@ -8,11 +8,11 @@ import CategoryGrid from "@/components/home/CategoryGrid";
 import OfferBanner from "@/components/home/OfferBanner";
 import TrendingProducts from "@/components/home/TrendingProducts";
 import BiharSection from "@/components/home/BiharSection";
-import Testimonials from "@/components/home/Testimonials";
 import Newsletter from "@/components/home/Newsletter";
 import MobileNav from "@/components/layout/MobileNav";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import type { ProductCard } from "@/types/database.types";
+import { VISIBLE_CATEGORY_SLUGS } from "@/lib/categories";
 
 export const revalidate = 3600;
 
@@ -26,6 +26,7 @@ async function getData() {
     supabase
       .from("categories")
       .select("slug, name, image_url, description")
+      .in("slug", VISIBLE_CATEGORY_SLUGS)
       .order("id"),
     supabase
       .from("products")
@@ -59,7 +60,7 @@ export default async function Home() {
           <OfferBanner />
           <TrendingProducts products={products} />
           <BiharSection />
-          <Testimonials />
+          {/* Testimonials hidden until real customer reviews are collected — see Phase 0 in bigpotli-seo-fix-plan-v3.md */}
           <Newsletter />
         </main>
 

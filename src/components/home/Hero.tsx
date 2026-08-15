@@ -26,7 +26,7 @@ export default function Hero() {
               in Bihar
             </h1>
             <p className="text-white/80 text-lg max-w-lg leading-relaxed">
-              Shop abayas, hijabs, kurti sets &amp; unstitched suits online.
+              Shop abayas &amp; Pakistani suits online.
               Free delivery across Bihar — Patna, Gaya, Muzaffarpur &amp; all districts.
               COD available.
             </p>
@@ -39,10 +39,10 @@ export default function Hero() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="/unstitched"
+                href="/pakistani-suit"
                 className="border-2 border-white/60 text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-brand-deep transition-all"
               >
-                View Unstitched
+                View Pakistani Suits
               </Link>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { siteConfig } from "@/lib/siteConfig";
 
 export default function ContactPage() {
     return (
@@ -25,7 +26,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-brand-plum">Our Boutique</h4>
-                                        <p className="text-gray-500 text-sm">123 Fashion Street, Silk Market, New Delhi - 110001</p>
+                                        <p className="text-gray-500 text-sm">{siteConfig.address.street}, {siteConfig.address.locality}, {siteConfig.address.region} {siteConfig.address.postalCode}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4">
@@ -34,7 +35,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-brand-plum">Call Us</h4>
-                                        <p className="text-gray-500 text-sm">+91 98765 43210</p>
+                                        <p className="text-gray-500 text-sm">{siteConfig.phone.display}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4">
