@@ -29,3 +29,25 @@ body {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+
+@layer components {
+  /* Shared typography for long-form legal/policy pages (src/components/policy). */
+  .policy-article h2 {
+    @apply font-serif text-xl md:text-2xl text-brand-deep font-bold mt-10 mb-4 first:mt-0;
+  }
+  .policy-article h3 {
+    @apply font-serif text-base md:text-lg text-brand-deep font-bold mt-6 mb-2;
+  }
+  .policy-article p {
+    @apply text-brand-muted text-sm leading-relaxed mb-4;
+  }
+  .policy-article ul {
+    @apply list-disc list-outside pl-5 space-y-2 text-brand-muted text-sm leading-relaxed mb-4;
+  }
+  .policy-article strong {
+    @apply text-brand-deep font-semibold;
+  }
+  .policy-article a {
+    @apply text-brand-gold font-semibold underline hover:text-brand-plum transition-colors;
+  }
+}

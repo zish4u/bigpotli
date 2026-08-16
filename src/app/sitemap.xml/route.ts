@@ -14,12 +14,22 @@ export async function GET() {
   ]);
 
   const baseUrl = "https://bigpotli.com";
-  const staticPages = ["", "/cart", "/checkout", "/account", "/new-arrivals"];
+  const staticPages = ["", "/new-arrivals"];
+  const policyPages = [
+    "/policies/cancellation-exchange",
+    "/policies/shipping",
+    "/policies/privacy",
+    "/policies/terms",
+  ];
 
   const urls = [
     ...staticPages.map(
       (p) =>
         `<url><loc>${baseUrl}${p}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+    ),
+    ...policyPages.map(
+      (p) =>
+        `<url><loc>${baseUrl}${p}</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>`
     ),
     ...(categories ?? []).map(
       (c) =>
