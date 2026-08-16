@@ -17,7 +17,7 @@ export default function BiharSection() {
   return (
     <section className="py-20 bg-brand-deep overflow-hidden">
       <div className="container mx-auto px-6 text-center">
-        <p className="text-brand-gold text-[10px] font-bold uppercase tracking-[0.4em] mb-4">
+        <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-[0.4em] mb-4">
           Loved Across Bihar
         </p>
         <h2 className="font-serif text-4xl md:text-5xl text-white mb-4">
@@ -25,7 +25,7 @@ export default function BiharSection() {
         </h2>
         <p className="text-white/50 max-w-xl mx-auto mb-10 leading-relaxed">
           From Patna to Purnea, we deliver abayas, hijabs, and ethnic wear across
-          Bihar with free shipping on orders over ₹5,000 and COD available everywhere.
+          Bihar with free shipping on orders over ₹5,000 and Cash on Delivery on orders over ₹1,000.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -34,11 +34,11 @@ export default function BiharSection() {
               key={city}
               className="flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/70 text-sm px-4 py-2 rounded-full"
             >
-              <MapPin className="w-3 h-3 text-brand-gold flex-shrink-0" />
+              <MapPin className="w-3 h-3 text-brand-gold-light flex-shrink-0" />
               {city}
             </div>
           ))}
-          <div className="flex items-center gap-1.5 bg-brand-gold/20 border border-brand-gold/30 text-brand-gold text-sm px-4 py-2 rounded-full font-bold">
+          <div className="flex items-center gap-1.5 bg-brand-gold-light/20 border border-brand-gold-light/30 text-brand-gold-light text-sm px-4 py-2 rounded-full font-bold">
             + All Bihar Districts
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function BiharSection() {
             { num: "500+", label: "Products in Stock" },
           ].map(({ num, label }) => (
             <div key={label} className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <p className="font-serif text-3xl text-brand-gold font-bold">{num}</p>
+              <p className="font-serif text-3xl text-brand-gold-light font-bold">{num}</p>
               <p className="text-white/50 text-sm mt-1">{label}</p>
             </div>
           ))}

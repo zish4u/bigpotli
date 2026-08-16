@@ -118,7 +118,7 @@ export default async function CategoryPage({ params }: Props) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/80 via-brand-deep/40 to-transparent flex items-end">
             <div className="container mx-auto px-6 pb-8">
-              <p className="text-brand-gold text-[10px] font-bold uppercase tracking-[0.3em] mb-2">
+              <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-[0.3em] mb-2">
                 {category.name}
               </p>
               <h1 className="font-serif text-3xl md:text-5xl text-white leading-tight">

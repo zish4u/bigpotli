@@ -25,9 +25,9 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
     title:
       "Abaya Online in Bihar | COD in Kishanganj, Katihar, Purnia, Patna & More | Bigpotli",
     description:
-      "Buy abayas online with COD across Bihar — Patna, Kishanganj, Katihar, Purnia, Araria, Darbhanga & more. Daily-wear cotton to premium embroidered abayas.",
+      "Buy abayas online with COD (orders ₹1,000+) across Bihar — Patna, Kishanganj, Katihar, Purnia, Araria, Darbhanga & more. Daily-wear cotton to premium embroidered abayas.",
     h1: "Buy Abaya Online in Bihar | Patna, Kishanganj, Katihar & More",
-    body: "Bigpotli is Bihar's trusted destination for abayas online, from everyday cotton styles under ₹500 to premium embroidered pieces for Eid and weddings. We deliver with Cash on Delivery to Patna and across Seemanchal — including Kishanganj, Katihar, Araria, and Purnia — so you can order with confidence and pay only when your abaya arrives. In Darbhanga, Pashchim Champaran, and Sitamarhi too, our courier partners bring the same COD convenience straight to your doorstep. Every abaya is chosen for fabrics suited to Bihar's climate: breathable cotton and Nida for the long, humid summer, and richer georgette or crepe for winter and festive occasions. Product photos are real and honest, so what you see on the page is exactly what arrives at your door — no surprises. From size XS to 4XL, our size chart on every product page makes it easy to order confidently online, without needing an in-store trial — something that matters when the nearest big-city boutique can be hours away for many of our customers. Our daily-wear and embroidered styles are among our fastest-selling collections and restock regularly, so if your size or design is out of stock, it's worth checking back within a week or two. Whether you're dressing for daily prayers, Eid celebrations, or a wedding in the family, Bigpotli's abaya collection is built around comfort, modesty, and quality that holds up to Bihar's weather.",
+    body: "Bigpotli is Bihar's trusted destination for abayas online, from everyday cotton styles under ₹500 to premium embroidered pieces for Eid and weddings. We deliver with Cash on Delivery — on orders over ₹1,000 — to Patna and across Seemanchal — including Kishanganj, Katihar, Araria, and Purnia — so you can order with confidence and pay only when your abaya arrives. In Darbhanga, Pashchim Champaran, and Sitamarhi too, our courier partners bring the same COD convenience straight to your doorstep. Every abaya is chosen for fabrics suited to Bihar's climate: breathable cotton and Nida for the long, humid summer, and richer georgette or crepe for winter and festive occasions. Product photos are real and honest, so what you see on the page is exactly what arrives at your door — no surprises. From size XS to 4XL, our size chart on every product page makes it easy to order confidently online, without needing an in-store trial — something that matters when the nearest big-city boutique can be hours away for many of our customers. Our daily-wear and embroidered styles are among our fastest-selling collections and restock regularly, so if your size or design is out of stock, it's worth checking back within a week or two. Whether you're dressing for daily prayers, Eid celebrations, or a wedding in the family, Bigpotli's abaya collection is built around comfort, modesty, and quality that holds up to Bihar's weather.",
     districtCoverage: true,
     faqs: [
       {
@@ -48,16 +48,16 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
       {
         question: "Do you deliver abayas with COD across Bihar?",
         answer:
-          "Yes, Cash on Delivery is available on all abaya orders across Patna, Gaya, Muzaffarpur, Bhagalpur, Darbhanga, Purnia, Kishanganj, Katihar, Araria, and other Bihar districts.",
+          "Yes, Cash on Delivery is available on orders above ₹1,000 across Patna, Gaya, Muzaffarpur, Bhagalpur, Darbhanga, Purnia, Kishanganj, Katihar, Araria, and other Bihar districts. Orders below ₹1,000 need to be prepaid.",
       },
     ],
   },
   hijab: {
     title: "Best Hijab Online Store India – Affordable & Near Me | Bigpotli",
     description:
-      "India's trusted hijab online store. Buy affordable hijabs with COD & free delivery across Bihar.",
+      "India's trusted hijab online store. Buy affordable hijabs with COD (orders ₹1,000+) & free delivery across Bihar.",
     h1: "Best Hijab Online Store in India – Shop Hijab Near You in Bihar",
-    body: "Shop chiffon hijabs, plain hijabs, and printed hijabs online. Affordable hijab near me – COD available. Free delivery across Bihar, including Patna, Gaya, Muzaffarpur, Purnia, Kishanganj, Katihar and Araria.",
+    body: "Shop chiffon hijabs, plain hijabs, and printed hijabs online. Affordable hijab near me – COD available on orders ₹1,000+. Free delivery across Bihar, including Patna, Gaya, Muzaffarpur, Purnia, Kishanganj, Katihar and Araria.",
     faqs: [
       {
         question: "How do I style a hijab with an abaya?",
@@ -84,9 +84,9 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
   unstitched: {
     title: "Unstitched Suits Online Bihar – Dress Material with COD | Bigpotli",
     description:
-      "Buy unstitched suits & dress material online in Bihar. COD available. Free delivery to Patna, Muzaffarpur & all districts.",
+      "Buy unstitched suits & dress material online in Bihar. COD available on orders ₹1,000+. Free delivery to Patna, Muzaffarpur & all districts.",
     h1: "Buy Unstitched Suits & Dress Material Online in Bihar",
-    body: "Choose from cotton unstitched suits, silk fabric sets, and salwar kameez material. Free to stitch with your local tailor. COD available across Bihar.",
+    body: "Choose from cotton unstitched suits, silk fabric sets, and salwar kameez material. Free to stitch with your local tailor. COD available on orders over ₹1,000, across Bihar.",
     faqs: [
       {
         question: "How much fabric do I need for a salwar suit?",
@@ -104,7 +104,7 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
     title:
       "Affordable Kurti Sets & Stitched Suits for Women | Bigpotli Bihar",
     description:
-      "Shop stitched suits & kurti sets under ₹500 for women. COD available. Free delivery across Bihar.",
+      "Shop stitched suits & kurti sets under ₹500 for women. COD available on orders ₹1,000+. Free delivery across Bihar.",
     h1: "Stitched Suits & Kurti Sets Under ₹500 – Bihar's Ethnic Wear Store",
     body: "Ready-to-wear kurti sets, ethnic co-ord sets, and stitched salwar suits for daily wear, Eid, and wedding occasions. Prices starting under ₹500.",
     faqs: [
@@ -123,9 +123,9 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
   "pakistani-suit": {
     title: "Pakistani Suit Online in Bihar | Patna, Katihar, Purnia & More | Bigpotli",
     description:
-      "Shop Pakistani suits online with COD across Bihar — Patna, Katihar, Purnia, Kishanganj & more. Unstitched and ready-to-wear styles for Eid & weddings.",
+      "Shop Pakistani suits online with COD (orders ₹1,000+) across Bihar — Patna, Katihar, Purnia, Kishanganj & more. Unstitched and ready-to-wear styles for Eid & weddings.",
     h1: "Pakistani Suit Online in Bihar | Patna, Katihar, Purnia & More",
-    body: "Bigpotli brings authentic Pakistani suits to Bihar with Cash on Delivery available across the state. Customers in Patna order our unstitched and ready-to-wear sets for Eid, weddings, and everyday elegance, while shoppers across Seemanchal — Kishanganj, Katihar, Araria, and Purnia — rely on us for the same COD convenience and doorstep delivery. In Darbhanga, Pashchim Champaran, and Sitamarhi, our courier network reaches just as reliably, so distance from Patna is never a barrier to ordering. Pakistani suits are known for longer kameez lengths, straight-cut trousers or shararas, and richer embroidery than typical Indian suits — a distinct silhouette that Bigpotli sources carefully to bring genuine styles rather than approximations. Many of our sets arrive as versatile 3-piece outfits — kameez, trouser or sharara, and dupatta — so you can mix and match pieces to build a wardrobe rather than a single occasion outfit. Each set arrives with real product photography, so the fabric, embroidery, and fit you see online is exactly what you receive. Whether you're shopping for a festive Eid outfit, a wedding function, or a statement piece to elevate your everyday wardrobe, our Pakistani suit collection is curated for both comfort and craftsmanship. New arrivals are added regularly, so it's worth checking back if a particular design or size is temporarily sold out.",
+    body: "Bigpotli brings authentic Pakistani suits to Bihar with Cash on Delivery available across the state on orders over ₹1,000. Customers in Patna order our unstitched and ready-to-wear sets for Eid, weddings, and everyday elegance, while shoppers across Seemanchal — Kishanganj, Katihar, Araria, and Purnia — rely on us for the same COD convenience and doorstep delivery. In Darbhanga, Pashchim Champaran, and Sitamarhi, our courier network reaches just as reliably, so distance from Patna is never a barrier to ordering. Pakistani suits are known for longer kameez lengths, straight-cut trousers or shararas, and richer embroidery than typical Indian suits — a distinct silhouette that Bigpotli sources carefully to bring genuine styles rather than approximations. Many of our sets arrive as versatile 3-piece outfits — kameez, trouser or sharara, and dupatta — so you can mix and match pieces to build a wardrobe rather than a single occasion outfit. Each set arrives with real product photography, so the fabric, embroidery, and fit you see online is exactly what you receive. Whether you're shopping for a festive Eid outfit, a wedding function, or a statement piece to elevate your everyday wardrobe, our Pakistani suit collection is curated for both comfort and craftsmanship. New arrivals are added regularly, so it's worth checking back if a particular design or size is temporarily sold out.",
     districtCoverage: true,
     faqs: [
       {
@@ -141,16 +141,16 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
       {
         question: "Is COD available on Pakistani suit orders in Bihar?",
         answer:
-          "Yes, Cash on Delivery is available on Pakistani suit orders across Patna and all Bihar districts.",
+          "Yes, Cash on Delivery is available on Pakistani suit orders above ₹1,000 across Patna and all Bihar districts. Orders below ₹1,000 need to be prepaid.",
       },
     ],
   },
   "lawn-suit": {
     title: "Buy Pakistani Lawn Suits Online in Bihar | COD | Bigpotli",
     description:
-      "Shop unstitched Pakistani lawn suits online. Free delivery across Bihar. COD available.",
+      "Shop unstitched Pakistani lawn suits online. Free delivery across Bihar. COD available on orders ₹1,000+.",
     h1: "Buy Pakistani Lawn Suits Online in Bihar",
-    body: "Shop unstitched Pakistani lawn suits — breathable summer fabric, best selection April to July. Free delivery to Patna, Gaya, Muzaffarpur, Bhagalpur and all Bihar districts. COD available.",
+    body: "Shop unstitched Pakistani lawn suits — breathable summer fabric, best selection April to July. Free delivery to Patna, Gaya, Muzaffarpur, Bhagalpur and all Bihar districts. COD available on orders over ₹1,000.",
     faqs: [
       {
         question: "What is lawn fabric?",
@@ -172,9 +172,9 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
   kurti: {
     title: "Buy Kurti Online in Bihar | COD | Bigpotli",
     description:
-      "Shop designer and cotton kurtis online with COD. Free delivery to Patna & all Bihar districts.",
+      "Shop designer and cotton kurtis online with COD (orders ₹1,000+). Free delivery to Patna & all Bihar districts.",
     h1: "Buy Kurti Online in Bihar",
-    body: "Shop designer kurtis, cotton kurtis for daily wear, and kurti sets with palazzo. Perfect for Chhath Puja, Eid, and everyday styling. Free delivery to Patna, Gaya, Muzaffarpur, Bhagalpur and all Bihar districts. COD available.",
+    body: "Shop designer kurtis, cotton kurtis for daily wear, and kurti sets with palazzo. Perfect for Chhath Puja, Eid, and everyday styling. Free delivery to Patna, Gaya, Muzaffarpur, Bhagalpur and all Bihar districts. COD available on orders over ₹1,000.",
     faqs: [
       {
         question: "Which kurti is best for Chhath Puja?",
@@ -196,9 +196,9 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
   "co-ord-set": {
     title: "Buy Co-ord Sets Online in Bihar | COD | Bigpotli",
     description:
-      "Shop ethnic co-ord sets online with COD. Free delivery across Bihar.",
+      "Shop ethnic co-ord sets online with COD (orders ₹1,000+). Free delivery across Bihar.",
     h1: "Buy Ethnic Co-ord Sets Online in Bihar",
-    body: "Shop ethnic co-ord sets — matching top and bottom sets for summer and festive occasions. Free delivery to Patna, Gaya, Muzaffarpur and all Bihar districts. COD available.",
+    body: "Shop ethnic co-ord sets — matching top and bottom sets for summer and festive occasions. Free delivery to Patna, Gaya, Muzaffarpur and all Bihar districts. COD available on orders over ₹1,000.",
     faqs: [
       {
         question: "What is a co-ord set?",
@@ -223,7 +223,7 @@ export function getCategoryMetadata(slug: string, fallbackName: string): Metadat
   if (!seo) {
     return {
       title: `Buy ${fallbackName} Online in Bihar | Bigpotli`,
-      description: `Shop premium ${fallbackName} online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & all districts. COD available.`,
+      description: `Shop premium ${fallbackName} online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & all districts. COD available on orders ₹1,000+.`,
     };
   }
   return {

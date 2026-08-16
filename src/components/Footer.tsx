@@ -12,7 +12,7 @@ export default function Footer() {
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
                         <Image src="/logo_old.jpg" alt="Bigpotli Logo" width={48} height={48} className="w-12 h-12 rounded-full" />
-                        <h2 className="text-3xl font-serif text-brand-gold font-bold">Bigpotli</h2>
+                        <h2 className="text-3xl font-serif text-brand-gold-light font-bold">Bigpotli</h2>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed">
                         Bigpotli is your premiere destination for exquisite Indian ethnic wear and modest fashion. We celebrate womanhood with grace and style.
@@ -34,34 +34,34 @@ export default function Footer() {
                 </div>
 
                 <div>
-                    <h4 className="font-serif text-xl text-brand-gold mb-6 font-semibold">Discovery</h4>
+                    <h4 className="font-serif text-xl text-brand-gold-light mb-6 font-semibold">Discovery</h4>
                     <ul className="space-y-4 text-gray-400 text-sm font-medium">
-                        <li><Link href="/abaya" className="hover:text-brand-gold transition-colors">Luxury Abayas</Link></li>
-                        <li><Link href="/pakistani-suit" className="hover:text-brand-gold transition-colors">Pakistani Suits</Link></li>
-                        <li><Link href="/new-arrivals" className="hover:text-brand-gold transition-colors">New Arrivals</Link></li>
+                        <li><Link href="/abaya" className="hover:text-brand-gold-light transition-colors">Luxury Abayas</Link></li>
+                        <li><Link href="/pakistani-suit" className="hover:text-brand-gold-light transition-colors">Pakistani Suits</Link></li>
+                        <li><Link href="/new-arrivals" className="hover:text-brand-gold-light transition-colors">New Arrivals</Link></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 className="font-serif text-xl text-brand-gold mb-6 font-semibold">Contact Us</h4>
+                    <h4 className="font-serif text-xl text-brand-gold-light mb-6 font-semibold">Contact Us</h4>
                     <ul className="space-y-4 text-gray-400 text-sm font-medium">
                         <li className="flex items-start gap-3">
-                            <MapPin className="w-5 h-5 text-brand-gold flex-shrink-0" />
+                            <MapPin className="w-5 h-5 text-brand-gold-light flex-shrink-0" />
                             <span>{siteConfig.address.street},<br />{siteConfig.address.locality}, {siteConfig.address.region} {siteConfig.address.postalCode}</span>
                         </li>
                         <li className="flex items-center gap-3">
-                            <Phone className="w-5 h-5 text-brand-gold flex-shrink-0" />
-                            <a href={siteConfig.phone.href} className="hover:text-brand-gold transition-colors">{siteConfig.phone.display}</a>
+                            <Phone className="w-5 h-5 text-brand-gold-light flex-shrink-0" />
+                            <a href={siteConfig.phone.href} className="hover:text-brand-gold-light transition-colors">{siteConfig.phone.display}</a>
                         </li>
                         <li className="flex items-center gap-3">
-                            <Mail className="w-5 h-5 text-brand-gold flex-shrink-0" />
+                            <Mail className="w-5 h-5 text-brand-gold-light flex-shrink-0" />
                             <span>support@bigpotli.com</span>
                         </li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 className="font-serif text-xl text-brand-gold mb-6 font-semibold">Newsletter</h4>
+                    <h4 className="font-serif text-xl text-brand-gold-light mb-6 font-semibold">Newsletter</h4>
                     <p className="text-gray-400 text-sm mb-6">Subscribe to receive exclusive offers and early access to new collections.</p>
                     <div className="flex flex-col sm:flex-row gap-3">
                         <input

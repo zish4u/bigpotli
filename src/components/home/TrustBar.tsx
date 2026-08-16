@@ -2,7 +2,7 @@ import { Truck, CreditCard, RefreshCw, MessageCircle } from "lucide-react";
 
 const ITEMS = [
   { icon: Truck, label: "Free Delivery in Bihar", sub: "Orders over ₹5,000" },
-  { icon: CreditCard, label: "COD Available", sub: "Pay on delivery" },
+  { icon: CreditCard, label: "COD Available", sub: "Orders over ₹1,000" },
   { icon: RefreshCw, label: "Easy Returns", sub: "7-day return policy" },
   { icon: MessageCircle, label: "WhatsApp Support", sub: "Hijab shop near me" },
 ];
@@ -17,7 +17,7 @@ export default function TrustBar() {
               key={label}
               className="flex items-center gap-3 text-white"
             >
-              <Icon className="w-5 h-5 text-brand-gold flex-shrink-0" />
+              <Icon className="w-5 h-5 text-brand-gold-light flex-shrink-0" />
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide leading-tight">
                   {label}

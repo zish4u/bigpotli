@@ -17,18 +17,18 @@ export default function Hero() {
       <div className="absolute inset-0 flex items-center">
         <div className="container mx-auto px-6">
           <div className="max-w-2xl space-y-6">
-            <p className="text-brand-gold text-[11px] font-bold uppercase tracking-[0.4em]">
+            <p className="text-brand-gold-light text-[11px] font-bold uppercase tracking-[0.4em]">
               Bihar&apos;s Trusted Modest Wear Store
             </p>
             <h1 className="font-serif text-5xl md:text-7xl text-white leading-tight">
               Modest &amp; Ethnic Wear{" "}
-              <span className="text-brand-gold italic">for Women</span>{" "}
+              <span className="text-brand-gold-light italic">for Women</span>{" "}
               in Bihar
             </h1>
             <p className="text-white/80 text-lg max-w-lg leading-relaxed">
               Shop abayas &amp; Pakistani suits online.
               Free delivery across Bihar — Patna, Gaya, Muzaffarpur &amp; all districts.
-              COD available.
+              COD available on orders over ₹1,000.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
               <Link

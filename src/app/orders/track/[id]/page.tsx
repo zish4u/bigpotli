@@ -98,7 +98,7 @@ export default function OrderTrackingPage() {
                     {/* Mini Summary */}
                     <div className="space-y-8">
                         <div className="bg-brand-plum text-white p-8 rounded-2xl shadow-xl space-y-6">
-                            <p className="text-brand-gold text-[10px] font-bold uppercase tracking-[0.2em]">Order Summary</p>
+                            <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-[0.2em]">Order Summary</p>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="opacity-60">Status</span>
@@ -110,10 +110,10 @@ export default function OrderTrackingPage() {
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="opacity-60">Tracking #</span>
-                                    <span className="font-bold text-brand-gold">BPX-900123</span>
+                                    <span className="font-bold text-brand-gold-light">BPX-900123</span>
                                 </div>
                             </div>
-                            <button className="w-full bg-white text-brand-plum py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-brand-gold transition-colors">
+                            <button className="w-full bg-white text-brand-plum py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-brand-gold hover:text-white transition-colors">
                                 View Invoice
                             </button>
                         </div>

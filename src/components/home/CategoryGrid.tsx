@@ -47,7 +47,7 @@ export default function CategoryGrid({ categories }: Props) {
                   {cat.description}
                 </p>
               )}
-              <p className="text-brand-gold text-[10px] font-bold uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 Shop Now →
               </p>
             </div>

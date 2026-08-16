@@ -22,8 +22,9 @@ export default function BiharDistrictCoverage({
           We Deliver Across Bihar
         </h2>
         <p className="text-white/50 text-sm text-center max-w-xl mx-auto mb-8">
-          Cash on Delivery and free shipping to {districts.length} districts,
-          including every corner of Seemanchal and North Bihar.
+          From Patna to the farthest reaches of Seemanchal, we ship free to
+          every corner of Bihar — with Cash on Delivery on orders above
+          ₹1,000.
         </p>
         <div className="flex flex-wrap justify-center gap-2.5">
           {districts.map((district) => {
@@ -33,7 +34,7 @@ export default function BiharDistrictCoverage({
                 key={district}
                 className={
                   isTier1
-                    ? "flex items-center gap-1.5 bg-brand-gold/20 border border-brand-gold/30 text-brand-gold text-xs md:text-sm px-3.5 py-1.5 rounded-full font-semibold"
+                    ? "flex items-center gap-1.5 bg-brand-gold-light/20 border border-brand-gold-light/30 text-brand-gold-light text-xs md:text-sm px-3.5 py-1.5 rounded-full font-semibold"
                     : "flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/70 text-xs md:text-sm px-3.5 py-1.5 rounded-full"
                 }
               >

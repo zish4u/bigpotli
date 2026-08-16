@@ -40,13 +40,13 @@ export default function OfferBanner() {
           <div className="absolute bottom-0 left-0 w-56 h-56 bg-brand-gold/5 rounded-full -translate-x-1/2 translate-y-1/2 blur-3xl pointer-events-none" />
 
           <div className="flex-1 space-y-5 text-center md:text-left relative z-10">
-            <div className="inline-flex items-center gap-2 bg-brand-gold/20 border border-brand-gold/30 text-brand-gold text-[10px] font-bold uppercase px-4 py-2 tracking-[0.3em] rounded-full">
-              <span className="animate-pulse w-2 h-2 rounded-full bg-brand-gold" />
+            <div className="inline-flex items-center gap-2 bg-brand-gold-light/20 border border-brand-gold-light/30 text-brand-gold-light text-[10px] font-bold uppercase px-4 py-2 tracking-[0.3em] rounded-full">
+              <span className="animate-pulse w-2 h-2 rounded-full bg-brand-gold-light" />
               Eid Special
             </div>
             <h2 className="font-serif text-4xl md:text-5xl text-white leading-tight">
               Luxury{" "}
-              <span className="text-brand-gold italic">Eid</span>{" "}
+              <span className="text-brand-gold-light italic">Eid</span>{" "}
               Collection <br />
               <span className="text-2xl font-sans font-bold text-brand-rose">
                 Up to 40% OFF

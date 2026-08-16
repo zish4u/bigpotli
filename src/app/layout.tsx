@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         template: "%s | Bigpotli",
     },
     description:
-        "Shop premium ethnic wear, abayas, hijabs & unstitched suits online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & nearby cities. COD available.",
+        "Shop premium ethnic wear, abayas, hijabs & unstitched suits online. Free delivery across Bihar – Patna, Gaya, Muzaffarpur & nearby cities. COD available on orders ₹1,000+.",
     keywords: [
         "buy abaya online Bihar",
         "affordable abaya online India",

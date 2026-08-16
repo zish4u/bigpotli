@@ -20,11 +20,11 @@ export default function NewArrivalsPage() {
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-gold/5 rounded-full -translate-x-1/2 translate-y-1/2 blur-3xl"></div>
 
                 <div className="container mx-auto px-6 relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 bg-brand-gold/20 border border-brand-gold/30 text-brand-gold text-[10px] font-bold uppercase px-4 py-2 tracking-[0.3em] rounded-full mb-6">
+                    <div className="inline-flex items-center gap-2 bg-brand-gold-light/20 border border-brand-gold-light/30 text-brand-gold-light text-[10px] font-bold uppercase px-4 py-2 tracking-[0.3em] rounded-full mb-6">
                         <Sparkles className="w-3 h-3" /> Latest Collection
                     </div>
                     <h1 className="font-serif text-5xl md:text-7xl text-white mb-6 leading-tight">
-                        New <span className="text-brand-gold italic">Arrivals</span>
+                        New <span className="text-brand-gold-light italic">Arrivals</span>
                     </h1>
                     <p className="text-gray-300 text-lg max-w-2xl mx-auto italic">
                         Be the first to explore our newest pieces, meticulously crafted for elegance and contemporary style.
@@ -72,7 +72,7 @@ export default function NewArrivalsPage() {
                         <div className="absolute inset-0 opacity-10 pointer-events-none">
                             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-serif text-white mb-6 relative z-10">Don't Miss <span className="text-brand-gold italic">Next</span> Release</h2>
+                        <h2 className="text-3xl md:text-5xl font-serif text-white mb-6 relative z-10">Don't Miss <span className="text-brand-gold-light italic">Next</span> Release</h2>
                         <p className="text-gray-300 max-w-xl mx-auto mb-10 relative z-10 leading-relaxed">
                             Join our exclusive mailing list to get early access to new arrivals, seasonal promotions, and modest fashion insights.
                         </p>
