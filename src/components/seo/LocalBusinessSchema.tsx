@@ -2,6 +2,10 @@ import { siteConfig } from "@/lib/siteConfig";
 import { ALL_BIHAR_DISTRICTS } from "@/lib/districts";
 
 export default function LocalBusinessSchema() {
+  const sameAs = Object.values(siteConfig.social).filter(
+    (url): url is string => Boolean(url)
+  );
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "ClothingStore",
@@ -29,6 +33,7 @@ export default function LocalBusinessSchema() {
     })),
     priceRange: "₹₹",
     openingHours: "Mo-Sa 09:00-21:00",
+    ...(sameAs.length > 0 && { sameAs }),
   };
 
   return (

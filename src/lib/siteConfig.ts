@@ -17,6 +17,7 @@ export const siteConfig = {
   social: {
     instagram: "https://instagram.com/bigpotli" as string | null,
     facebook: null as string | null,
+    youtube: "https://www.youtube.com/@Bigpotli" as string | null,
   },
 };
 
