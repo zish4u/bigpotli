@@ -1,23 +1,81 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import { Package, Truck, CheckCircle2, MapPin, Calendar, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Package, Truck, CheckCircle2, MapPin, ArrowLeft, ShieldCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { createClient } from "@/lib/supabase/client";
+import { formatPrice } from "@/lib/utils";
+
+interface ShippingAddress {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+}
+
+interface OrderDetail {
+    id: string;
+    created_at: string | null;
+    status: string | null;
+    total: number;
+    payment_id: string | null;
+    shipping_address: ShippingAddress | null;
+    order_items: { id: number; quantity: number; price: number; products: { name: string } | null }[];
+}
+
+const STATUS_COPY: Record<string, { label: string; icon: typeof CheckCircle2 }> = {
+    confirmed: { label: "Order Confirmed", icon: CheckCircle2 },
+    shipped: { label: "Shipped", icon: Truck },
+    delivered: { label: "Delivered", icon: MapPin },
+    cancelled: { label: "Cancelled", icon: Package },
+};
 
 export default function OrderTrackingPage() {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const router = useRouter();
+    const [order, setOrder] = useState<OrderDetail | null | undefined>(undefined);
 
-    // Mock tracking data
-    const trackingSteps = [
-        { title: "Order Placed", date: "Dec 21, 10:30 AM", status: "completed", icon: CheckCircle2 },
-        { title: "Processing", date: "Dec 21, 02:45 PM", status: "completed", icon: ShieldCheck },
-        { title: "Shipped", date: "Dec 22, 09:15 AM", status: "current", icon: Truck },
-        { title: "Out for Delivery", date: "Pending", status: "upcoming", icon: Package },
-        { title: "Delivered", date: "Pending", status: "upcoming", icon: MapPin },
-    ];
+    useEffect(() => {
+        const supabase = createClient();
+
+        supabase.auth.getUser().then(async ({ data: { user } }) => {
+            if (!user) {
+                router.replace("/login");
+                return;
+            }
+
+            const { data } = await supabase
+                .from("orders")
+                .select("id, created_at, status, total, payment_id, shipping_address, order_items(id, quantity, price, products(name))")
+                .eq("id", id)
+                .eq("user_id", user.id)
+                .single();
+
+            setOrder((data as unknown as OrderDetail) ?? null);
+        });
+    }, [id, router]);
+
+    if (order === undefined) {
+        return (
+            <main className="min-h-screen bg-gray-50 flex flex-col">
+                <Header />
+                <div className="flex-grow flex items-center justify-center py-24">
+                    <p className="text-gray-400 font-medium">Loading order...</p>
+                </div>
+                <Footer />
+            </main>
+        );
+    }
+
+    const status = order?.status?.toLowerCase() ?? "confirmed";
+    const statusCopy = STATUS_COPY[status] ?? STATUS_COPY.confirmed;
+    const StatusIcon = statusCopy.icon;
+    const address = order?.shipping_address;
 
     return (
         <main className="min-h-screen bg-gray-50 flex flex-col">
@@ -25,109 +83,75 @@ export default function OrderTrackingPage() {
 
             <div className="bg-white py-12 border-b border-gray-100">
                 <div className="container mx-auto px-6">
-                    <button onClick={() => router.back()} className="text-sm font-bold text-gray-400 hover:text-brand-plum flex items-center gap-1 mb-4">
+                    <button onClick={() => router.push("/orders/history")} className="text-sm font-bold text-gray-400 hover:text-brand-plum flex items-center gap-1 mb-4">
                         <ArrowLeft className="w-4 h-4" /> Back to History
                     </button>
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                        <div>
-                            <h1 className="font-serif text-4xl text-brand-plum">Track Your Order</h1>
-                            <p className="text-gray-500 mt-2 font-mono font-bold">#{id}</p>
-                        </div>
-                        <div className="flex items-center gap-4 bg-brand-plum/5 px-6 py-3 rounded-2xl border border-brand-plum/10">
-                            <Calendar className="w-5 h-5 text-brand-gold" />
-                            <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Expected Delivery</p>
-                                <p className="text-sm font-bold text-brand-plum">Dec 27 - Dec 29, 2024</p>
-                            </div>
-                        </div>
-                    </div>
+                    <h1 className="font-serif text-4xl text-brand-plum">Order Details</h1>
+                    {order && <p className="text-gray-500 mt-2">#{order.id.slice(0, 8).toUpperCase()}</p>}
                 </div>
             </div>
 
             <div className="flex-grow container mx-auto px-6 py-12">
-                <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+                {!order ? (
+                    <div className="max-w-2xl mx-auto text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+                        <Package className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                        <h3 className="text-xl font-serif text-brand-plum">Order not found</h3>
+                        <p className="text-gray-500">
+                            We couldn&apos;t find that order, or it doesn&apos;t belong to your account.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="max-w-2xl mx-auto space-y-6">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0">
+                                <StatusIcon className="w-6 h-6 text-brand-gold" />
+                            </div>
+                            <div>
+                                <p className="font-serif text-xl text-brand-plum">{statusCopy.label}</p>
+                                <p className="text-sm text-gray-500">
+                                    {order.created_at
+                                        ? `Placed on ${new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}`
+                                        : "Placed recently"}
+                                </p>
+                            </div>
+                        </div>
 
-                    {/* Tracking Timeline */}
-                    <div className="lg:col-span-2 space-y-8">
-                        <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-
-                            <h2 className="text-xl font-bold font-serif text-brand-plum mb-10">Shipping Progress</h2>
-
-                            <div className="space-y-12">
-                                {trackingSteps.map((step, idx) => (
-                                    <div key={idx} className="relative flex gap-6">
-                                        {/* Line connection */}
-                                        {idx !== trackingSteps.length - 1 && (
-                                            <div className={`absolute left-4 top-10 bottom-0 w-0.5 ml-[11px] ${step.status === "completed" ? "bg-brand-gold" : "bg-gray-100"}`}></div>
-                                        )}
-
-                                        <div className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all ${step.status === "completed" ? "bg-brand-gold text-white" :
-                                                step.status === "current" ? "bg-brand-plum text-white ring-4 ring-brand-plum/10" :
-                                                    "bg-gray-100 text-gray-300"
-                                            }`}>
-                                            <step.icon className="w-4 h-4" />
-                                        </div>
-
-                                        <div className="space-y-1">
-                                            <p className={`text-sm font-bold uppercase tracking-wider ${step.status === "upcoming" ? "text-gray-300" : "text-brand-plum-dark"
-                                                }`}>
-                                                {step.title}
-                                            </p>
-                                            <p className="text-xs text-gray-400 font-medium">{step.date}</p>
-                                        </div>
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-4">
+                            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400">Items</h2>
+                            {order.order_items.map((item) => (
+                                <div key={item.id} className="flex justify-between items-center border-b border-gray-50 last:border-0 pb-3 last:pb-0">
+                                    <div>
+                                        <p className="text-sm font-bold text-brand-plum-dark">{item.products?.name ?? "Product"}</p>
+                                        <p className="text-xs text-gray-400">Qty {item.quantity}</p>
                                     </div>
-                                ))}
+                                    <p className="text-sm font-bold text-brand-plum-dark">{formatPrice(item.price * item.quantity)}</p>
+                                </div>
+                            ))}
+                            <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                                <p className="text-sm font-bold text-gray-500">Total</p>
+                                <p className="text-lg font-bold text-brand-gold">{formatPrice(order.total)}</p>
                             </div>
                         </div>
 
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <h3 className="text-lg font-bold text-brand-plum mb-6">Delivery Address</h3>
-                            <div className="flex gap-4 p-4 bg-gray-50 rounded-xl">
-                                <MapPin className="w-6 h-6 text-brand-gold flex-shrink-0" />
-                                <div className="text-sm text-gray-600 leading-relaxed uppercase font-bold tracking-tight">
-                                    <p className="text-brand-plum-dark font-black">Zishan Ahmad</p>
-                                    <p>123 Elegance Lane, Fashion District</p>
-                                    <p>Dubai, UAE - 400102</p>
-                                    <p>Contact: +91 91234 56789</p>
-                                </div>
+                        {address && (
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-2">
+                                <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Shipping To</h2>
+                                <p className="text-sm font-bold text-brand-plum-dark">
+                                    {[address.firstName, address.lastName].filter(Boolean).join(" ")}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    {[address.address, address.city, address.state, address.zipCode].filter(Boolean).join(", ")}
+                                </p>
+                                {address.phone && <p className="text-sm text-gray-600">{address.phone}</p>}
                             </div>
+                        )}
+
+                        <div className="flex items-center gap-2 text-xs text-gray-400 font-bold uppercase tracking-widest justify-center">
+                            <ShieldCheck className="w-4 h-4 text-brand-gold" />
+                            Payment Verified
                         </div>
                     </div>
-
-                    {/* Mini Summary */}
-                    <div className="space-y-8">
-                        <div className="bg-brand-plum text-white p-8 rounded-2xl shadow-xl space-y-6">
-                            <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-[0.2em]">Order Summary</p>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="opacity-60">Status</span>
-                                    <span className="font-bold">Shipped</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="opacity-60">Courier</span>
-                                    <span className="font-bold">Aramex / DHL</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="opacity-60">Tracking #</span>
-                                    <span className="font-bold text-brand-gold-light">BPX-900123</span>
-                                </div>
-                            </div>
-                            <button className="w-full bg-white text-brand-plum py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-brand-gold hover:text-white transition-colors">
-                                View Invoice
-                            </button>
-                        </div>
-
-                        <div className="p-6 border border-gray-200 rounded-2xl bg-white space-y-4">
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Need help?</p>
-                            <p className="text-xs text-gray-500 text-center">Our concierge service is available 24/7 for you.</p>
-                            <button className="w-full border border-brand-plum text-brand-plum py-3 rounded-full text-xs font-bold uppercase hover:bg-brand-plum hover:text-white transition-all">
-                                Contact Concierge
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
+                )}
             </div>
 
             <Footer />

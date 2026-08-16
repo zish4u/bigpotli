@@ -6,7 +6,7 @@ export default function Hero() {
   return (
     <section className="relative h-[90vh] w-full overflow-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1920&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1662806407800-56793fa8e924?q=80&w=1920&auto=format&fit=crop"
         alt="Modest & Ethnic Wear for Women in Bihar"
         fill
         className="object-cover"

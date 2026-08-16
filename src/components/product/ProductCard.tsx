@@ -121,11 +121,10 @@ export default function ProductCard({ product, categorySlug }: Props) {
               e.preventDefault();
               addToCart(cartItem);
             }}
-            className="flex-1 min-h-[44px] border-2 border-brand-plum text-brand-plum rounded-xl flex items-center justify-center gap-1.5 font-bold uppercase tracking-widest hover:bg-brand-plum hover:text-white transition-all text-[9px] active:scale-95"
+            className="w-11 min-h-[44px] flex-shrink-0 border-2 border-brand-plum text-brand-plum rounded-xl flex items-center justify-center hover:bg-brand-plum hover:text-white transition-all active:scale-95"
             aria-label={`Add ${product.name} to cart`}
           >
-            <ShoppingBag className="w-3.5 h-3.5" aria-hidden="true" />
-            Add to Cart
+            <ShoppingBag className="w-4 h-4" aria-hidden="true" />
           </button>
           <button
             onClick={(e) => {
@@ -133,7 +132,7 @@ export default function ProductCard({ product, categorySlug }: Props) {
               addToCart(cartItem);
               router.push("/checkout");
             }}
-            className="flex-1 min-h-[44px] bg-brand-gold text-white rounded-xl flex items-center justify-center gap-1.5 font-bold uppercase tracking-widest hover:bg-brand-plum transition-all text-[9px] shadow-sm active:scale-95"
+            className="flex-1 min-h-[44px] bg-brand-gold text-white rounded-xl flex items-center justify-center gap-1.5 font-bold uppercase tracking-widest hover:bg-brand-plum transition-all text-[10px] shadow-sm active:scale-95"
             aria-label={`Buy ${product.name} now`}
           >
             <Zap className="w-3.5 h-3.5 fill-current" aria-hidden="true" />

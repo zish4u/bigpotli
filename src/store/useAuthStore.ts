@@ -24,6 +24,9 @@ export const useAuthStore = create<AuthStore>()(
         }),
         {
             name: 'bigpotli-auth-storage',
+            // See useCartStore.ts — skipped and rehydrated manually post-mount
+            // to avoid an SSR/client markup mismatch on first render.
+            skipHydration: true,
         }
     )
 );

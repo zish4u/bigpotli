@@ -6,13 +6,27 @@ import { ShoppingCart, Search, Menu, User, Heart, LogOut, X } from "lucide-react
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { SITE_ANNOUNCEMENT } from "@/lib/announcement";
+
+function toAuthUser(supabaseUser: SupabaseUser) {
+    return {
+        id: supabaseUser.id,
+        name:
+            (supabaseUser.user_metadata?.full_name as string | undefined) ||
+            supabaseUser.email?.split("@")[0] ||
+            "Account",
+        email: supabaseUser.email ?? "",
+    };
+}
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const { isLoggedIn, user, logout } = useAuthStore();
+    const { isLoggedIn, user, login, logout } = useAuthStore();
     const { cart, wishlist } = useCartStore();
 
     const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -26,14 +40,52 @@ export default function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // Cart/wishlist use skipHydration so the client's first render matches
+    // the server's; rehydrate from localStorage here, once, after mount.
+    // (useAuthStore also uses skipHydration but is never rehydrated from its
+    // own localStorage snapshot — the effect below always repopulates it
+    // from the real Supabase session instead, so pulling in the possibly
+    // stale local copy first would just risk a flash of wrong data.)
+    useEffect(() => {
+        useCartStore.persist.rehydrate();
+    }, []);
+
+    // Mirror the real Supabase session into the local auth store so the
+    // header (and everything reading useAuthStore) reflects who's actually
+    // signed in, not stale/mocked local state.
+    useEffect(() => {
+        const supabase = createClient();
+
+        supabase.auth.getUser().then(({ data: { user: supabaseUser } }) => {
+            if (supabaseUser) login(toAuthUser(supabaseUser));
+            else logout();
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session?.user) login(toAuthUser(session.user));
+            else logout();
+        });
+
+        return () => subscription.unsubscribe();
+    }, [login, logout]);
+
+    const handleSignOut = async () => {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+        logout();
+        setIsUserMenuOpen(false);
+    };
+
     return (
         <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-white"}`}>
             {/* Top Banner */}
-            <div className="bg-brand-plum py-2 px-4 text-center">
-                <p className="text-white text-xs font-medium tracking-widest uppercase">
-                    Free International Shipping on Orders Over ₹15,000 | Code: BP-GLOBAL
-                </p>
-            </div>
+            {SITE_ANNOUNCEMENT && (
+                <div className="bg-brand-plum py-2 px-4 text-center">
+                    <p className="text-white text-xs font-medium tracking-widest uppercase">
+                        {SITE_ANNOUNCEMENT}
+                    </p>
+                </div>
+            )}
 
             <nav className="container mx-auto px-4 md:px-6">
                 <div className="flex h-20 md:h-28 items-center justify-between">
@@ -88,7 +140,7 @@ export default function Header() {
                                             <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-plum">Account Settings</Link>
                                             <Link href="/orders/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-plum">Order History</Link>
                                             <button
-                                                onClick={() => { logout(); setIsUserMenuOpen(false); }}
+                                                onClick={handleSignOut}
                                                 className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                                             >
                                                 <LogOut className="w-4 h-4" /> Sign Out
@@ -140,7 +192,7 @@ export default function Header() {
                                 <>
                                     <li><Link href="/account" onClick={() => setIsMenuOpen(false)}>My Account</Link></li>
                                     <li><Link href="/orders/history" onClick={() => setIsMenuOpen(false)}>My Orders</Link></li>
-                                    <li><button onClick={() => { logout(); setIsMenuOpen(false); }} className="text-red-600">Sign Out</button></li>
+                                    <li><button onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="text-red-600">Sign Out</button></li>
                                 </>
                             ) : (
                                 <>

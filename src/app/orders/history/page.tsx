@@ -1,48 +1,67 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { Package, ChevronRight, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuthStore } from "@/store/useAuthStore";
+import { createClient } from "@/lib/supabase/client";
+import { formatPrice } from "@/lib/utils";
 
-// Mock data for order history
-const MOCK_ORDERS = [
-    {
-        id: "BP-00129",
-        date: "Dec 15, 2024",
-        status: "Delivered",
-        amount: "₹12,499",
-        items: [
-            { name: "Luxury Embroidered Abaya", image: "https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=200&auto=format&fit=crop" }
-        ]
-    },
-    {
-        id: "BP-00245",
-        date: "Dec 21, 2024",
-        status: "Processing",
-        amount: "₹4,250",
-        items: [
-            { name: "Premium Chiffon Hijab", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=200&auto=format&fit=crop" },
-            { name: "Cotton Basic Abaya", image: "https://images.unsplash.com/photo-1609357605129-26f69abb5db8?q=80&w=200&auto=format&fit=crop" }
-        ]
-    }
-];
+interface OrderItem {
+    id: number;
+    quantity: number;
+    price: number;
+    products: { name: string; slug: string } | null;
+}
+
+interface Order {
+    id: string;
+    created_at: string | null;
+    status: string | null;
+    total: number;
+    order_items: OrderItem[];
+}
 
 export default function OrderHistoryPage() {
-    const { isLoggedIn, user } = useAuthStore();
     const router = useRouter();
+    const [orders, setOrders] = useState<Order[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isLoggedIn) {
-            router.push("/login"); // Only for logged in users
-        }
-    }, [isLoggedIn, router]);
+        const supabase = createClient();
 
-    if (!isLoggedIn) return null;
+        supabase.auth.getUser().then(async ({ data: { user } }) => {
+            if (!user) {
+                router.replace("/login");
+                return;
+            }
+
+            const { data } = await supabase
+                .from("orders")
+                .select("id, created_at, status, total, order_items(id, quantity, price, products(name, slug))")
+                .eq("user_id", user.id)
+                .order("created_at", { ascending: false });
+
+            setOrders((data as unknown as Order[]) ?? []);
+            setLoading(false);
+        });
+    }, [router]);
+
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-gray-50 flex flex-col">
+                <Header />
+                <div className="flex-grow flex items-center justify-center py-24">
+                    <p className="text-gray-400 font-medium">Loading your orders...</p>
+                </div>
+                <Footer />
+            </main>
+        );
+    }
+
+    if (!orders) return null;
 
     return (
         <main className="min-h-screen bg-gray-50 flex flex-col">
@@ -60,21 +79,25 @@ export default function OrderHistoryPage() {
 
             <div className="flex-grow container mx-auto px-6 py-12">
                 <div className="max-w-4xl mx-auto space-y-6">
-                    {MOCK_ORDERS.map((order) => (
+                    {orders.map((order) => (
                         <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
                             <div className="flex flex-col md:flex-row justify-between pb-6 border-b border-gray-50 gap-4">
                                 <div className="flex gap-10">
                                     <div>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Order Placed</p>
-                                        <p className="text-sm font-bold text-brand-plum-dark">{order.date}</p>
+                                        <p className="text-sm font-bold text-brand-plum-dark">
+                                            {order.created_at
+                                                ? new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                                                : "—"}
+                                        </p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Amount</p>
-                                        <p className="text-sm font-bold text-brand-plum-dark">{order.amount}</p>
+                                        <p className="text-sm font-bold text-brand-plum-dark">{formatPrice(order.total)}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Order ID</p>
-                                        <p className="text-sm font-bold text-brand-plum-dark">#{order.id}</p>
+                                        <p className="text-sm font-bold text-brand-plum-dark">#{order.id.slice(0, 8).toUpperCase()}</p>
                                     </div>
                                 </div>
                                 <div>
@@ -86,17 +109,17 @@ export default function OrderHistoryPage() {
 
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
-                                    <span className={`w-3 h-3 rounded-full ${order.status === "Delivered" ? "bg-green-500" : "bg-blue-500"}`}></span>
-                                    <p className="text-xs font-bold uppercase text-gray-500 tracking-wider font-mono">{order.status}</p>
+                                    <span className={`w-3 h-3 rounded-full ${order.status === "delivered" ? "bg-green-500" : "bg-blue-500"}`}></span>
+                                    <p className="text-xs font-bold uppercase text-gray-500 tracking-wider font-mono">{order.status ?? "confirmed"}</p>
                                 </div>
 
-                                <div className="flex flex-wrap gap-4">
-                                    {order.items.map((item, idx) => (
-                                        <div key={idx} className="flex gap-4 items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
-                                            <div className="relative h-16 w-12 rounded-md overflow-hidden flex-shrink-0">
-                                                <Image src={item.image} alt={item.name} fill className="object-cover" />
-                                            </div>
-                                            <p className="text-xs font-bold text-brand-plum-dark max-w-[150px] line-clamp-2">{item.name}</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {order.order_items.map((item) => (
+                                        <div key={item.id} className="flex gap-3 items-center bg-gray-50 px-4 py-3 rounded-xl border border-gray-100">
+                                            <p className="text-xs font-bold text-brand-plum-dark max-w-[180px] line-clamp-2">
+                                                {item.products?.name ?? "Product"}
+                                            </p>
+                                            <span className="text-[11px] text-gray-400 font-bold flex-shrink-0">× {item.quantity}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -104,7 +127,7 @@ export default function OrderHistoryPage() {
                         </div>
                     ))}
 
-                    {MOCK_ORDERS.length === 0 && (
+                    {orders.length === 0 && (
                         <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
                             <Package className="w-16 h-16 text-gray-200 mx-auto mb-4" />
                             <h3 className="text-xl font-serif text-brand-plum">No orders yet</h3>

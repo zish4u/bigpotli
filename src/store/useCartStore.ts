@@ -101,6 +101,10 @@ export const useCartStore = create<CartStore>()(
         }),
         {
             name: 'bigpotli-cart-storage',
+            // Rehydrated manually post-mount (see StoreHydration) so the client's
+            // first render matches the server's — persisted state read
+            // synchronously during render would mismatch the SSR'd markup.
+            skipHydration: true,
         }
     )
 );

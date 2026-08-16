@@ -22,7 +22,7 @@ export default function AboutPage() {
                 {/* Vision Image */}
                 <section className="relative h-[60vh] w-full">
                     <Image
-                        src="https://images.unsplash.com/photo-1594235412402-b1ed69967243?q=80&w=1920&auto=format&fit=crop"
+                        src="https://images.unsplash.com/photo-1736342182213-6c037467cb38?q=80&w=1920&auto=format&fit=crop"
                         alt="Bigpotli Craftsmanship"
                         fill
                         className="object-cover"

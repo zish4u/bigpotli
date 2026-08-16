@@ -3,25 +3,40 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuthStore } from "@/store/useAuthStore";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const login = useAuthStore((state) => state.login);
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Mock login logic
-        if (email && password) {
-            login({ id: "1", name: "User", email });
-            router.push("/");
+        setError(null);
+        setIsSubmitting(true);
+
+        const supabase = createClient();
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+        setIsSubmitting(false);
+
+        if (signInError) {
+            setError(
+                signInError.message === "Invalid login credentials"
+                    ? "Incorrect email or password. Please try again."
+                    : signInError.message
+            );
+            return;
         }
+
+        router.push("/");
+        router.refresh();
     };
 
     return (
@@ -40,6 +55,12 @@ export default function LoginPage() {
                     </div>
 
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="flex items-start gap-2 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg px-4 py-3">
+                                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                <span>{error}</span>
+                            </div>
+                        )}
                         <div className="rounded-md space-y-4">
                             <div className="relative">
                                 <label htmlFor="email-address" className="sr-only">Email address</label>
@@ -102,9 +123,10 @@ export default function LoginPage() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-brand-plum hover:bg-brand-plum-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-plum transition-all shadow-md hover:shadow-lg"
+                                disabled={isSubmitting}
+                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-brand-plum hover:bg-brand-plum-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-plum transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Sign In
+                                {isSubmitting ? "Signing In..." : "Sign In"}
                             </button>
                         </div>
                     </form>

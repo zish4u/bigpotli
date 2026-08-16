@@ -3,25 +3,46 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, User, Phone } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, AlertCircle, MailCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuthStore } from "@/store/useAuthStore";
+import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const login = useAuthStore((state) => state.login);
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Mock signup logic
-        if (name && email && password) {
-            login({ id: "1", name, email });
+        setError(null);
+        setIsSubmitting(true);
+
+        const supabase = createClient();
+        const { data, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: name } },
+        });
+
+        setIsSubmitting(false);
+
+        if (signUpError) {
+            setError(signUpError.message);
+            return;
+        }
+
+        if (data.session) {
             router.push("/");
+            router.refresh();
+        } else {
+            // Email confirmation is required before a session is issued.
+            setNeedsEmailConfirmation(true);
         }
     };
 
@@ -40,7 +61,23 @@ export default function SignupPage() {
                         </p>
                     </div>
 
+                    {needsEmailConfirmation ? (
+                        <div className="text-center space-y-4 py-4">
+                            <MailCheck className="h-10 w-10 text-brand-gold mx-auto" />
+                            <p className="text-brand-plum font-bold">Check your inbox</p>
+                            <p className="text-sm text-gray-600">
+                                We&apos;ve sent a confirmation link to <span className="font-semibold">{email}</span>.
+                                Confirm your email to finish creating your account.
+                            </p>
+                        </div>
+                    ) : (
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="flex items-start gap-2 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg px-4 py-3">
+                                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                <span>{error}</span>
+                            </div>
+                        )}
                         <div className="rounded-md space-y-4">
                             <div className="relative">
                                 <label htmlFor="full-name" className="sr-only">Full Name</label>
@@ -116,12 +153,14 @@ export default function SignupPage() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-brand-plum hover:bg-brand-plum-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-plum transition-all shadow-md hover:shadow-lg"
+                                disabled={isSubmitting}
+                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-brand-plum hover:bg-brand-plum-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-plum transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Create Account
+                                {isSubmitting ? "Creating Account..." : "Create Account"}
                             </button>
                         </div>
                     </form>
+                    )}
 
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-600">
