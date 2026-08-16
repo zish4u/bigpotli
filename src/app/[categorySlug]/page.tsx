@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createStaticClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -13,10 +12,17 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import FAQSchema from "@/components/seo/FAQSchema";
 import FAQAccordion from "@/components/FAQAccordion";
 import BiharDistrictCoverage from "@/components/seo/BiharDistrictCoverage";
+import CategoryProductGrid from "@/components/category/CategoryProductGrid";
 import type { ProductCard } from "@/types/database.types";
-import { Star, ShoppingBag } from "lucide-react";
+import { Truck, CreditCard, ChevronRight } from "lucide-react";
 import { getCategoryMetadata, getCategorySEO } from "@/lib/seo";
 import { TIER1_DISTRICTS, TIER2_DISTRICTS, TIER3_DISTRICTS } from "@/lib/districts";
+
+const EXPLORE_LINKS = [
+  { href: "/abaya", label: "Abaya" },
+  { href: "/pakistani-suit", label: "Pakistani Suit" },
+  { href: "/new-arrivals", label: "New Arrivals" },
+];
 
 const CATEGORY_SLUGS = [
   "abaya",
@@ -86,7 +92,11 @@ export default async function CategoryPage({ params }: Props) {
     .eq("category_id", category.id)
     .order("created_at", { ascending: false });
 
-  const typedProducts = (products ?? []) as unknown as ProductCard[];
+  const rawProducts = (products ?? []) as unknown as ProductCard[];
+  const typedProducts: ProductCard[] = rawProducts.map((product) => ({
+    ...product,
+    categories: { slug: categorySlug, name: category.name },
+  }));
   const seo = getCategorySEO(categorySlug);
   const h1 = seo?.h1 ?? `Buy ${category.name} Online in Bihar`;
   const bodyText = seo?.body ?? `Shop premium ${category.name} online with free delivery across Bihar.`;
@@ -103,34 +113,56 @@ export default async function CategoryPage({ params }: Props) {
       <div className="min-h-screen flex flex-col bg-brand-ivory">
         <Header />
 
-        {/* Category Hero */}
-        <div className="relative h-64 md:h-80 w-full overflow-hidden">
-          {category.image_url ? (
-            <Image
-              src={category.image_url}
-              alt={category.name}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full bg-brand-rose/20" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/80 via-brand-deep/40 to-transparent flex items-end">
-            <div className="container mx-auto px-6 pb-8">
-              <p className="text-brand-gold-light text-[10px] font-bold uppercase tracking-[0.3em] mb-2">
-                {category.name}
-              </p>
-              <h1 className="font-serif text-3xl md:text-5xl text-white leading-tight">
-                {h1}
+        {/* Breadcrumb + compact title — no hero banner competing with the product grid */}
+        <div className="bg-white border-b border-gray-100">
+          <div className="container mx-auto px-6 pt-5 pb-4">
+            <nav className="flex items-center gap-2 text-xs text-gray-400 font-medium mb-3">
+              <Link href="/" className="hover:text-brand-gold transition-colors">Home</Link>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-brand-plum-dark">{category.name}</span>
+            </nav>
+            <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
+              <h1 className="font-serif text-brand-deep font-bold leading-tight">
+                <span className="block text-2xl md:text-3xl">{category.name}</span>
+                <span className="block text-xs md:text-sm font-medium text-brand-muted normal-case mt-1">
+                  {h1}
+                </span>
               </h1>
+              <span className="text-brand-muted text-sm lg:hidden">
+                {typedProducts.length} product{typedProducts.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            {/* Trust signals — light inline badges, not a competing dark bar
+                (the header already carries a dark promo strip) */}
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-1.5 mt-3 pt-3 border-t border-gray-100 text-[11px] md:text-xs font-semibold text-brand-muted">
+              <span className="flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5 text-brand-gold flex-shrink-0" />
+                Free Delivery Across Bihar
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-brand-gold flex-shrink-0" />
+                COD Available on Orders ₹1,000+
+              </span>
             </div>
           </div>
         </div>
 
-        {/* SEO body copy + delivery info */}
-        <div className="bg-white border-b border-gray-100">
-          <div className="container mx-auto px-6 py-4">
+        <main className="flex-grow container mx-auto px-6 py-8 pb-24 md:pb-10">
+          {typedProducts.length === 0 ? (
+            <div className="text-center py-24">
+              <p className="text-brand-muted font-medium">
+                No products found in this category yet.
+              </p>
+            </div>
+          ) : (
+            <CategoryProductGrid products={typedProducts} categorySlug={categorySlug} />
+          )}
+        </main>
+
+        {/* SEO copy + district coverage — below the product grid, not competing with it */}
+        <div className="bg-white border-t border-gray-100">
+          <div className="container mx-auto px-6 py-10">
             <p className="text-brand-muted text-sm leading-relaxed max-w-3xl">
               {bodyText}
               {seo?.districtCoverage ? (
@@ -162,93 +194,32 @@ export default async function CategoryPage({ params }: Props) {
           />
         )}
 
-        <main className="flex-grow container mx-auto px-6 py-10 pb-24 md:pb-10">
-          {typedProducts.length === 0 ? (
-            <div className="text-center py-24">
-              <ShoppingBag className="w-12 h-12 text-brand-rose mx-auto mb-4" />
-              <p className="text-brand-muted font-medium">
-                No products found in this category yet.
-              </p>
-            </div>
-          ) : (
-            <>
-              <p className="text-brand-muted text-sm mb-6">
-                {typedProducts.length} product{typedProducts.length !== 1 ? "s" : ""} found
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {typedProducts.map((product) => {
-                  const image = product.product_images?.[0];
-                  const discount = product.compare_price
-                    ? Math.round(
-                        ((product.compare_price - product.price) /
-                          product.compare_price) *
-                          100
-                      )
-                    : null;
-
-                  return (
-                    <Link
-                      key={product.id}
-                      href={`/${categorySlug}/${product.slug}`}
-                      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col"
-                      aria-label={product.name}
-                    >
-                      <div className="relative h-[220px] md:h-[260px] overflow-hidden bg-brand-rose/10">
-                        {image ? (
-                          <Image
-                            src={image.url}
-                            alt={image.alt ?? product.name}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110"
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-brand-rose/20" />
-                        )}
-                        {product.is_new && (
-                          <span className="absolute top-3 left-3 bg-brand-plum text-white text-[9px] font-bold uppercase px-2.5 py-1 rounded-full tracking-widest">
-                            New
-                          </span>
-                        )}
-                        {discount && (
-                          <span className="absolute top-3 right-3 bg-brand-gold text-white text-[9px] font-bold px-2.5 py-1 rounded-full">
-                            -{discount}%
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="p-3 md:p-4 flex-grow flex flex-col">
-                        {(product.rating ?? 0) > 0 && (
-                          <div className="flex items-center gap-1 mb-1">
-                            <Star className="w-3 h-3 text-brand-gold fill-current" aria-hidden="true" />
-                            <span className="text-[10px] font-bold text-brand-muted">
-                              {product.rating}
-                            </span>
-                          </div>
-                        )}
-                        <h2 className="font-serif text-sm md:text-base text-brand-deep font-bold line-clamp-2 mb-2 group-hover:text-brand-gold transition-colors leading-snug">
-                          {product.name}
-                        </h2>
-                        <div className="mt-auto flex items-baseline gap-2">
-                          <span className="text-brand-plum font-black text-base md:text-lg">
-                            ₹{product.price.toLocaleString("en-IN")}
-                          </span>
-                          {product.compare_price && (
-                            <span className="text-brand-muted/40 line-through text-xs">
-                              ₹{product.compare_price.toLocaleString("en-IN")}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </main>
-
         {seo?.faqs && seo.faqs.length > 0 && <FAQAccordion items={seo.faqs} />}
+
+        {/* Explore More — plain internal links, same pattern as Nykaa/Myntra's
+            "Popular Searches" / "Other Categories" blocks near the footer */}
+        <div className="bg-gray-50 border-t border-gray-100">
+          <div className="container mx-auto px-6 py-8">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand-muted mb-3">
+              Explore More
+            </p>
+            <p className="text-sm leading-relaxed">
+              {EXPLORE_LINKS.filter((link) => link.href !== `/${categorySlug}`).map(
+                (link, i, arr) => (
+                  <span key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-brand-deep font-medium hover:text-brand-gold transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                    {i < arr.length - 1 && <span className="mx-2 text-gray-300">|</span>}
+                  </span>
+                )
+              )}
+            </p>
+          </div>
+        </div>
 
         <Footer />
         <MobileNav />
