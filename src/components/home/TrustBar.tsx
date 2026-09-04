@@ -15,7 +15,7 @@ export default function TrustBar() {
           {ITEMS.map(({ icon: Icon, label, sub }) => (
             <div
               key={label}
-              className="flex items-center gap-3 text-white"
+              className="flex items-center justify-center gap-3 text-white text-center"
             >
               <Icon className="w-5 h-5 text-brand-gold-light flex-shrink-0" />
               <div>

@@ -88,7 +88,7 @@ export default function Header() {
             )}
 
             <nav className="container mx-auto px-4 md:px-6">
-                <div className="flex h-20 md:h-28 items-center justify-between">
+                <div className="relative flex h-20 md:h-28 items-center justify-between">
                     {/* Mobile Menu Button */}
                     <button className="md:hidden p-2 text-brand-plum" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -106,8 +106,9 @@ export default function Header() {
                         />
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <ul className="hidden md:flex items-center space-x-8 text-sm font-bold uppercase tracking-widest text-brand-plum-dark">
+                    {/* Desktop Navigation — absolutely centered so it stays in the true middle
+                        of the header regardless of how the logo/actions widths compare */}
+                    <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-8 text-sm font-bold uppercase tracking-widest text-brand-plum-dark">
                         <li><Link href="/abaya" className="hover:text-brand-gold transition-colors">Abaya</Link></li>
                         <li><Link href="/pakistani-suit" className="hover:text-brand-gold transition-colors">Pakistani Suit</Link></li>
                         <li><Link href="/new-arrivals" className="text-brand-gold hover:text-brand-plum transition-colors">New Arrivals</Link></li>
