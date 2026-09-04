@@ -5,8 +5,8 @@ import { join } from "node:path";
 export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
 
 export function renderBrandOgImage() {
-  const logoBuffer = readFileSync(join(process.cwd(), "public", "logo_old.jpg"));
-  const logoBase64 = `data:image/jpeg;base64,${logoBuffer.toString("base64")}`;
+  const logoBuffer = readFileSync(join(process.cwd(), "public", "bigp-icon.png"));
+  const logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
 
   return new ImageResponse(
     (

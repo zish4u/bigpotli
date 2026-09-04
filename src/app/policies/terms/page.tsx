@@ -47,8 +47,9 @@ export default function TermsPage() {
 
       <h2>Cancellations, Exchanges & Refunds</h2>
       <p>
-        Order cancellations, exchanges, and refunds are governed by our{" "}
-        <a href="/policies/cancellation-exchange">Cancellation &amp; Exchange Policy</a>.
+        Order cancellations and exchanges are governed by our{" "}
+        <a href="/policies/cancellation-exchange">Cancellation &amp; Exchange Policy</a>, and
+        return eligibility by our <a href="/policies/refund-policy">Refund Policy</a>.
       </p>
 
       <h2>Intellectual Property</h2>

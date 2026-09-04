@@ -3,7 +3,7 @@ import { Truck, CreditCard, RefreshCw, MessageCircle } from "lucide-react";
 const ITEMS = [
   { icon: Truck, label: "Free Delivery in Bihar", sub: "Orders over ₹5,000" },
   { icon: CreditCard, label: "COD Available", sub: "Orders over ₹1,000" },
-  { icon: RefreshCw, label: "Easy Returns", sub: "7-day return policy" },
+  { icon: RefreshCw, label: "Easy Exchanges", sub: "48-hour exchange window" },
   { icon: MessageCircle, label: "WhatsApp Support", sub: "Hijab shop near me" },
 ];
 

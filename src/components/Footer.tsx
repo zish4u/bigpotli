@@ -11,8 +11,8 @@ export default function Footer() {
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-white/10 pb-16">
                 <div className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <Image src="/logo_old.jpg" alt="Bigpotli Logo" width={48} height={48} className="w-12 h-12 rounded-full" />
-                        <h2 className="text-3xl font-serif text-brand-gold-light font-bold">Bigpotli</h2>
+                        <Image src="/bigp-icon.png" alt="Bigpotli Logo" width={48} height={48} className="w-12 h-12 rounded-full" />
+                        <h2 className="text-3xl font-serif text-brand-gold-light font-semibold uppercase tracking-wide">Bigpotli</h2>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed">
                         Bigpotli is your premiere destination for exquisite Indian ethnic wear and modest fashion. We celebrate womanhood with grace and style.
@@ -82,6 +82,7 @@ export default function Footer() {
             <div className="container mx-auto px-6 pt-12 flex flex-col items-center gap-5 text-center">
                 <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-400 text-[11px] font-bold uppercase tracking-widest">
                     <li><Link href="/policies/cancellation-exchange" className="hover:text-brand-gold-light transition-colors">Cancellation &amp; Exchange</Link></li>
+                    <li><Link href="/policies/refund-policy" className="hover:text-brand-gold-light transition-colors">Refund Policy</Link></li>
                     <li><Link href="/policies/shipping" className="hover:text-brand-gold-light transition-colors">Shipping Policy</Link></li>
                     <li><Link href="/policies/privacy" className="hover:text-brand-gold-light transition-colors">Privacy Policy</Link></li>
                     <li><Link href="/policies/terms" className="hover:text-brand-gold-light transition-colors">Terms &amp; Conditions</Link></li>

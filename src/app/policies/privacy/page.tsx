@@ -46,7 +46,10 @@ export default function PrivacyPolicyPage() {
         <li>To process, ship, and support your orders</li>
         <li>To send order confirmations, shipping updates, and respond to support requests</li>
         <li>To personalize your experience and show you relevant products</li>
-        <li>To send marketing updates and offers, where you've opted in — you can unsubscribe anytime</li>
+        <li>
+          To send marketing updates and offers, and to measure and improve our marketing — where
+          you've opted in, you can unsubscribe anytime
+        </li>
         <li>To improve our website, products, and services</li>
         <li>To detect and prevent fraud or abuse</li>
       </ul>
@@ -54,18 +57,29 @@ export default function PrivacyPolicyPage() {
       <h2>Cookies & Analytics</h2>
       <p>
         We use cookies and similar technologies to keep you signed in, remember your cart, and
-        understand how visitors use our site. We use Google Analytics and Meta (Facebook) Pixel
-        to measure site traffic and ad performance. You can disable cookies in your browser
-        settings, though some features of the site may not work correctly without them.
+        understand how visitors use our site. We use Google Analytics and Meta (Facebook) Pixel to
+        measure site traffic, marketing performance, and ad conversions.
+      </p>
+      <p>
+        As part of this, identifiers you give us directly — such as your email address and the
+        name on your account — may be shared with Google and Meta in encrypted (hashed) form. This
+        lets those platforms match your visit or purchase to an ad you may have seen or clicked
+        (for example, Meta Advanced Matching or Google Enhanced Conversions), and helps us measure
+        and target our advertising more effectively. Google and Meta process this information
+        under their own privacy policies. You can disable cookies in your browser settings, though
+        some features of the site may not work correctly without them.
       </p>
 
       <h2>Who We Share Data With</h2>
-      <p>We share information only where necessary to run our store:</p>
+      <p>We share information only where necessary to run our store and market it effectively:</p>
       <ul>
         <li><strong>Razorpay</strong> — to process payments securely</li>
         <li><strong>Courier partners</strong> — to deliver your orders</li>
         <li><strong>Supabase</strong> — our database and authentication provider, which stores your account and order data securely</li>
-        <li><strong>Google and Meta</strong> — for analytics and advertising, in aggregated or pseudonymized form</li>
+        <li>
+          <strong>Google and Meta</strong> — for analytics and advertising, including matching
+          your email address or account name (in hashed form) to measure and target ad campaigns
+        </li>
       </ul>
       <p>We do not sell your personal information to third parties.</p>
 

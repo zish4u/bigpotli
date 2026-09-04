@@ -49,9 +49,19 @@ export default function ShippingPolicyPage() {
 
       <h2>Delivery Attempts</h2>
       <p>
-        Our courier partners typically make up to two delivery attempts. If both attempts are
-        unsuccessful, the order is returned to us — please reach out to us to arrange
-        redelivery or a refund for prepaid orders.
+        Our courier partners typically make up to two delivery attempts, on business days only —
+        deliveries don't run on Sundays or national holidays. If both attempts are unsuccessful,
+        the order is returned to us — please reach out to us to arrange redelivery or a refund for
+        prepaid orders.
+      </p>
+
+      <h2>Force Majeure</h2>
+      <p>
+        Delivery timelines may be delayed by events beyond our control — natural disasters
+        (floods, earthquakes, cyclones, severe weather), or disruptions such as flight
+        cancellations, curfews, strikes, or civil unrest. If your order is affected, we'll notify
+        you by email or SMS with an updated timeline, so please make sure the contact details on
+        your order are accurate and reachable.
       </p>
 
       <h2>Tracking Your Order</h2>

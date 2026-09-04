@@ -35,19 +35,19 @@ export default function Newsletter() {
             Thank you! You&apos;re now subscribed.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="flex-1 min-h-[52px] px-5 rounded-full border-2 border-brand-rose/40 bg-white text-brand-deep placeholder:text-brand-muted/40 focus:outline-none focus:border-brand-gold text-sm"
+              className="flex-1 min-w-0 min-h-[52px] px-5 rounded-full border-2 border-brand-rose/40 bg-white text-brand-deep placeholder:text-brand-muted/40 focus:outline-none focus:border-brand-gold text-sm"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              className="min-h-[52px] px-7 bg-brand-gold text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-brand-plum transition-all shadow-lg disabled:opacity-50 flex items-center gap-2"
+              className="min-h-[52px] px-7 bg-brand-gold text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-brand-plum transition-all shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 flex-shrink-0 whitespace-nowrap"
               aria-label="Subscribe to newsletter"
             >
               <Send className="w-4 h-4" />

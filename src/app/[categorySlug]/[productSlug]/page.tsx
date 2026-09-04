@@ -247,7 +247,7 @@ export default function ProductPage({ params }: Props) {
               {[
                 { icon: Truck, label: "Free delivery", sub: "Orders over ₹5,000" },
                 { icon: ShieldCheck, label: "Secure payment", sub: "SSL encrypted" },
-                { icon: RefreshCw, label: "Easy returns", sub: "7-day policy" },
+                { icon: RefreshCw, label: "Easy exchanges", sub: "48-hour window" },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="flex flex-col items-center text-center p-3 bg-white rounded-xl border border-gray-100">
                   <Icon className="w-5 h-5 text-brand-gold mb-1" />

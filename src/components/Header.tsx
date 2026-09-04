@@ -77,6 +77,7 @@ export default function Header() {
     };
 
     return (
+        <>
         <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-white"}`}>
             {/* Top Banner */}
             {SITE_ANNOUNCEMENT && (
@@ -94,16 +95,28 @@ export default function Header() {
                         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
 
-                    {/* Logo */}
-                    <Link href="/" className="flex-shrink-0 transition-transform hover:scale-105">
+                    {/* Logo — on mobile there's no competing centered nav (it's hidden
+                        behind the hamburger), so the logo is absolutely centered here,
+                        same fix as the desktop nav: the hamburger button and the actions
+                        cluster are different widths, so centering it via plain flex
+                        justify-between would leave it off-center. From `md:` up it goes
+                        back to sitting in normal flow, left of the (separately) centered
+                        nav — icon sized down from its previous 80px so it pairs
+                        proportionately with the wordmark; the wordmark itself only
+                        appears from `lg:` up, since at `md:` the centered nav sits
+                        close enough that adding text there would start to crowd it. */}
+                    <Link href="/" className="absolute left-1/2 -translate-x-1/2 md:static md:left-auto md:translate-x-0 flex-shrink-0 flex items-center gap-2 lg:gap-2 transition-transform hover:scale-105">
                         <Image
-                            src="/logo_old.jpg"
+                            src="/bigp-icon.png"
                             alt="Bigpotli Logo"
-                            width={64}
-                            height={64}
-                            className="h-10 w-10 md:h-14 md:w-14 rounded-full mix-blend-multiply"
+                            width={80}
+                            height={80}
+                            className="h-12 w-12 md:h-14 md:w-14 rounded-full mix-blend-multiply"
                             priority
                         />
+                        <span className="hidden lg:block font-serif text-3xl font-semibold uppercase tracking-wide text-brand-plum-light">
+                            Bigpotli
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation — absolutely centered so it stays in the true middle
@@ -176,35 +189,44 @@ export default function Header() {
                         </Link>
                     </div>
                 </div>
-
-                {/* Mobile Menu (Overlay) */}
-                {isMenuOpen && (
-                    <div className="md:hidden bg-white fixed inset-0 z-50 p-6 flex flex-col animate-in slide-in-from-left duration-300">
-                        <div className="flex justify-between items-center mb-10">
-                            <Image src="/logo_old.jpg" alt="Logo" width={48} height={48} className="h-8 w-8 rounded-full" />
-                            <button onClick={() => setIsMenuOpen(false)} className="p-4"><X className="w-6 h-6" /></button>
-                        </div>
-                        <ul className="flex flex-col space-y-6 text-xl font-bold uppercase tracking-wider text-brand-plum-dark">
-                            <li><Link href="/abaya" onClick={() => setIsMenuOpen(false)}>Abaya</Link></li>
-                            <li><Link href="/pakistani-suit" onClick={() => setIsMenuOpen(false)}>Pakistani Suit</Link></li>
-                            <li><Link href="/new-arrivals" onClick={() => setIsMenuOpen(false)} className="text-brand-gold">New Arrivals</Link></li>
-                            <hr className="border-gray-100" />
-                            {isLoggedIn ? (
-                                <>
-                                    <li><Link href="/account" onClick={() => setIsMenuOpen(false)}>My Account</Link></li>
-                                    <li><Link href="/orders/history" onClick={() => setIsMenuOpen(false)}>My Orders</Link></li>
-                                    <li><button onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="text-red-600">Sign Out</button></li>
-                                </>
-                            ) : (
-                                <>
-                                    <li><Link href="/login" onClick={() => setIsMenuOpen(false)}>Sign In</Link></li>
-                                    <li><Link href="/signup" onClick={() => setIsMenuOpen(false)}>Join Us</Link></li>
-                                </>
-                            )}
-                        </ul>
-                    </div>
-                )}
             </nav>
         </header>
+
+        {/* Mobile Menu (Overlay) — rendered as a sibling of <header>, not inside it:
+            when scrolled, the header gets a backdrop-blur class, and backdrop-filter
+            creates a CSS containing block for `fixed` descendants. That trapped this
+            "fixed inset-0" overlay inside the header's own (short) box instead of the
+            viewport, so it only ever covered the header's height and looked transparent
+            underneath. */}
+        {isMenuOpen && (
+            <div className="md:hidden bg-white fixed inset-0 z-50 p-6 flex flex-col animate-in slide-in-from-left duration-300">
+                <div className="flex justify-between items-center mb-10">
+                    <div className="flex items-center gap-2">
+                        <Image src="/bigp-icon.png" alt="Logo" width={48} height={48} className="h-8 w-8 rounded-full" />
+                        <span className="font-serif text-lg font-semibold uppercase text-brand-plum-light">Bigpotli</span>
+                    </div>
+                    <button onClick={() => setIsMenuOpen(false)} className="p-4"><X className="w-6 h-6" /></button>
+                </div>
+                <ul className="flex flex-col space-y-6 text-xl font-bold uppercase tracking-wider text-brand-plum-dark">
+                    <li><Link href="/abaya" onClick={() => setIsMenuOpen(false)}>Abaya</Link></li>
+                    <li><Link href="/pakistani-suit" onClick={() => setIsMenuOpen(false)}>Pakistani Suit</Link></li>
+                    <li><Link href="/new-arrivals" onClick={() => setIsMenuOpen(false)} className="text-brand-gold">New Arrivals</Link></li>
+                    <hr className="border-gray-100" />
+                    {isLoggedIn ? (
+                        <>
+                            <li><Link href="/account" onClick={() => setIsMenuOpen(false)}>My Account</Link></li>
+                            <li><Link href="/orders/history" onClick={() => setIsMenuOpen(false)}>My Orders</Link></li>
+                            <li><button onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="text-red-600">Sign Out</button></li>
+                        </>
+                    ) : (
+                        <>
+                            <li><Link href="/login" onClick={() => setIsMenuOpen(false)}>Sign In</Link></li>
+                            <li><Link href="/signup" onClick={() => setIsMenuOpen(false)}>Join Us</Link></li>
+                        </>
+                    )}
+                </ul>
+            </div>
+        )}
+        </>
     );
 }

@@ -17,6 +17,7 @@ export async function GET() {
   const staticPages = ["", "/new-arrivals"];
   const policyPages = [
     "/policies/cancellation-exchange",
+    "/policies/refund-policy",
     "/policies/shipping",
     "/policies/privacy",
     "/policies/terms",
